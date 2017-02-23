@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorMain">#3b8ede</color>
+    <color name="white">#ffffff</color>
+    <color name="background_gray">#eaeeef</color>
+    <color name="error" >#bf3434</color>
+    <color name="button_1_normal_background">#0061d9</color>
+    <color name="button_1_selected_background">#204572</color>
+    <color name="gray">#bfbfbf</color>
+    <color name="deepegray">#a3a3a3</color>
+    <color name="goods">@android:color/holo_orange_light</color>
+    <color name="shops">@android:color/holo_green_light</color>
+</resources>

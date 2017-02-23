@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/white"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView5"
+            android:minHeight="68dp" />
+
+
+        <LinearLayout
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:id="@+id/item_goods_editlayout_buttons"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"
+            android:visibility="gone"
+            >
+            <RelativeLayout
+                android:layout_width="40dp"
+                android:layout_height="50dp"
+                android:id="@+id/item_goods_edit_cancel">
+                <ImageButton
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/cancel"
+                    android:id="@+id/item_goods_edit_cancel_2" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="40dp"
+                android:layout_height="50dp"
+                android:id="@+id/item_goods_edit_apply">
+                <ImageButton
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/apply"
+                    android:id="@+id/item_goods_edit_apply_2" />
+            </RelativeLayout>
+        </LinearLayout>
+
+
+        <RelativeLayout
+            android:orientation="horizontal"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"
+            android:id="@+id/item_goods_edit">
+
+            <ImageButton
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/edit"
+                android:id="@+id/item_goods_edit_2" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="60dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="品名:"
+                android:id="@+id/textView4"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="8dp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/item_goods_name"
+                android:layout_marginBottom="5dp"
+                android:singleLine="false"
+                android:ellipsize="end"
+                android:textColor="@color/abc_input_method_navigation_guard"
+                android:textSize="18dp"
+                android:text="22222"
+
+                />
+            <EditText
+                android:layout_width="188dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/abc_input_method_navigation_guard"
+                android:id="@+id/item_goods_edit_name"
+                android:visibility="gone"
+                />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

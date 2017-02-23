@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_gray"
+    android:weightSum="1">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="12dp"
+            android:background="@color/shops">
+
+        </GridLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@color/shops">
+            <TextView
+                android:id="@+id/shops_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="18dp"
+                android:text="布衣大药房"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/white"
+                android:layout_centerHorizontal="false"
+                android:layout_centerInParent="false"
+                android:textSize="30sp" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="61dp"
+            android:background="@color/shops"
+            android:weightSum="1">
+
+            <RelativeLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="25dp">
+
+                <TextView
+                    android:text="地址："
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView9"
+                    android:layout_weight="1"
+                    android:textColor="@color/white"
+                    android:layout_centerVertical="false"
+                    android:layout_marginLeft="18dp" />
+
+                <TextView
+                    android:text="不知道什么路的什么地方"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/shops_pos"
+                    android:layout_toRightOf="@+id/textView9"
+                    android:layout_marginLeft="7dp"
+                    android:textColor="@color/white" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="36dp">
+
+                <RelativeLayout android:layout_height="38dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginRight="20dp"
+                    android:layout_width="45dp"
+                    android:id="@+id/detail_d_2">
+
+                    <ImageView
+                        android:id="@+id/detail_d"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/down"
+                        android:layout_height="28dp"
+                        android:layout_width="24dp" />
+                </RelativeLayout>
+
+                <TextView
+                    android:text="电话："
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView10"
+                    android:layout_weight="1"
+                    android:textColor="@color/white"
+                    android:layout_centerHorizontal="false"
+                    android:layout_centerVertical="false"
+                    android:layout_marginLeft="18dp" />
+
+                <TextView
+                    android:text="18340861800"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/shops_tel"
+                    android:layout_toRightOf="@+id/textView10"
+                    android:layout_marginLeft="7dp"
+                    android:textColor="@color/white" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <com.baoyz.swipemenulistview.SwipeMenuListView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/needs_listview" />
+            <RelativeLayout android:layout_height="80dp"
+                android:layout_width="80dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginBottom="50dp"
+                android:layout_marginRight="40dp"
+                android:onClick="onAddDetail">
+
+                <ImageView
+                    android:layout_height="60dp"
+                    android:background="@drawable/add_detail"
+                    android:id="@+id/imageView"
+                    android:layout_width="60dp"
+                    android:onClick="onAddDetail"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true" />
+
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/white"
+        android:id="@+id/detail_change_color">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp">
+
+            <TextView
+                android:text="TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/needs_date"
+                android:layout_centerHorizontal="false"
+                android:layout_centerVertical="false"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="20dp"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="5dp" />
+
+            <TextView
+                android:text="TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/needs_name"
+                android:textSize="20sp"
+                tools:textStyle="normal"
+                android:layout_centerHorizontal="false"
+                android:layout_centerVertical="true"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:text="X"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView11"
+                android:layout_toRightOf="@+id/needs_name"
+                android:layout_centerHorizontal="false"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:textColor="@color/button_1_selected_background" />
+
+            <TextView
+                android:text="X9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/needs_num"
+                android:layout_toRightOf="@+id/textView11"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                tools:textStyle="bold"
+                android:textSize="20sp"
+                android:textColor="@color/button_1_selected_background" />
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>

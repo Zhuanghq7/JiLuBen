@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:layout_centerInParent="true">
+    <RelativeLayout
+        android:layout_width="300dp"
+        android:background="@color/goods"
+        android:layout_height="80dp">
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/新的报货"
+            android:layout_centerInParent="true"
+            android:textSize="30sp"
+            android:textColor="@color/white" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="8">
+            <com.wangjie.wheelview.WheelView
+                android:id="@+id/main_mw"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="X"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:layout_marginTop="70dp" />
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="4">
+
+        <com.wangjie.wheelview.WheelView
+            android:id="@+id/main_mw_num"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+    </LinearLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:background="@color/goods"
+        android:layout_height="80dp"
+        android:id="@+id/detail_click_add">
+
+        <TextView
+            android:text="添加"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/detail_click_add_2"
+            android:layout_centerInParent="true"
+            android:textSize="30sp"
+            android:textColor="@color/white" />
+    </RelativeLayout>
+
+</LinearLayout>

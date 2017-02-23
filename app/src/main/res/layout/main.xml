@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:background="@color/colorMain"
+        android:layout_height="12dp"></LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/colorMain">
+
+        <RelativeLayout
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:id="@+id/button_add"
+            android:onClick="clickadd">
+
+            <ImageButton
+                android:layout_centerInParent="true"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:scaleType="fitXY"
+                android:background="@drawable/add"
+                android:onClick="clickadd"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_toLeftOf="@id/button_add"
+            android:layout_centerVertical="true"
+            android:id="@+id/button_goods"
+            android:layout_marginEnd="5dp"
+            android:onClick="clickgoods">
+
+            <ImageButton
+                android:layout_centerInParent="true"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:background="@drawable/goods"
+                android:scaleType="fitXY"
+                android:onClick="clickgoods"/>
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/app_name"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/white" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background_gray"
+        android:orientation="vertical">
+
+        <com.baoyz.swipemenulistview.SwipeMenuListView
+            android:id="@+id/listView_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@null"/>
+
+        <TextView
+            android:text="点击加号添加新项目！"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_noShops"
+            android:layout_centerInParent="true"
+            android:textSize="24sp" />
+    </RelativeLayout>
+</LinearLayout>
