@@ -2,6 +2,7 @@ package cn.zhuangh7.jiluben.activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -195,6 +196,11 @@ public class needsActivity extends BaseActivity {
         addNeedsDialog dialog = new addNeedsDialog();
         dialog.show(getFragmentManager(), "NeedsDialog");
     }
+    public void onAddDetail_2(View view){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("note1");
+        builder.create().show();
+    }
     public void onAddDetail(View view){
         Log.d(LOG_TAG, "nothing to show");
         Uri fileUri;
@@ -312,8 +318,7 @@ public class needsActivity extends BaseActivity {
                     }
                 } else {
 
-                    Log.d(LOG_TAG,
-                            "data IS null, file saved on target position.");
+                    Log.d(LOG_TAG,"data IS null, file saved on target position.");
                     // If there is no thumbnail image data, the image
                     // will have been stored in the target output URI.
 
