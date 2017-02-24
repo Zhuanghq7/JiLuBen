@@ -52,13 +52,15 @@ public class needsActivity extends BaseActivity {
     SwipeMenuListView mListView;
     detailAdapter mAdapter;
     needsItem[] goodss;
-    dataBase mdb;
+    dataBase mdb;//数据库
     mainItem shop;
     TextView name;
     TextView pos;
     TextView tel;
     RelativeLayout click_d;
     ImageView click;
+    String newPicName;
+    boolean createPicSuccess = false;
 
     @Override
     protected void onResume() {
@@ -210,6 +212,13 @@ public class needsActivity extends BaseActivity {
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
             cameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
 
+            //开始之前，先将信息写入数据库
+            if(createPicSuccess){
+                createPicSuccess = false;
+                int id = mdb.newPic(newPicName, shop.getID(), null);
+                Toast.makeText(this, "录入数据库成功，id" + id,Toast.LENGTH_SHORT).show();
+            }
+
             startActivityForResult(cameraIntent, 100);
         }else{
             //do nothing
@@ -229,7 +238,7 @@ public class needsActivity extends BaseActivity {
     //返回一个文件
     private File getOutputMediaFile(){
 
-
+        createPicSuccess = false;//在创建文件开始前
 
         Environment.getExternalStorageState();
         File mediaStorageDir = null;
@@ -250,10 +259,15 @@ public class needsActivity extends BaseActivity {
                 return null;
             }
         }
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyy_MM_dd-HH_mm_ss").format(new Date());
+
+        newPicName = timeStamp;//存储一下文件名
+
         File mediaFile;
         mediaFile = new File(mediaStorageDir.getPath() + File.separator+ "IMG_" + timeStamp + ".jpg");
 
+
+        createPicSuccess = true;//文件创建成功
         return mediaFile;
     }
 

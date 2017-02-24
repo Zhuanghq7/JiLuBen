@@ -21,10 +21,55 @@ public class dataBase {
         init();
     }
     private void init(){
-        dbHelper = new mDateBase(context,"JILUBEN.db",null,2);
+        dbHelper = new mDateBase(context,"JILUBEN.db",null,1);
         mDateBase = dbHelper.getWritableDatabase();
         isInit = true;
     }
+
+    public int newPic(String name,int shopId,String text){
+        //TODO 新的图片，默认p_cloud = 0;p_nopic = 0;p_text = null 成功返回ID\-1 text可为NULL
+        if(isInit){
+            if (name.equals("")) {
+                return -2;
+            }
+            mDateBase.execSQL("insert into Pictures(shop_id,p_name,p_text,p_cloud,p_nopic)values(?,?,?,?,?)",new Object[]{shopId,name,text,0,0});
+            Cursor cursor = mDateBase.rawQuery("select ID from Pictures where p_name = ? and shop_id = ?", new String[]{name,""+shopId});
+            while(cursor.moveToNext()){
+                int ID = cursor.getInt(0);
+                return ID;
+            }
+        }
+        return -1;
+    }
+    public boolean deletePic(String name,int shopId){
+        //TODO 删除照片，同时删除text
+        return false;
+    }
+    public boolean editPic(String name,int shopId,String text){
+        //TODO 修改照片对应信息
+        return false;
+    }
+
+
+    public int newText(String name,String text){
+        //TODO 新的text text不能为null 返回id
+        return -1;
+    }
+    public boolean editText(String name,String text){
+        //TODO 修改文本
+        return false;
+    }
+    public boolean deleteText(String name,int shopId){
+        //TODO 懒得写了.
+        return false;
+    }
+
+    public boolean upclould(String name,int shop_id){
+        //TODO 上传字段设置为1
+        return false;
+    }
+
+    //还需要一波读取
 
     public int addShop(String name,String pos,String tel){
         if(isInit){

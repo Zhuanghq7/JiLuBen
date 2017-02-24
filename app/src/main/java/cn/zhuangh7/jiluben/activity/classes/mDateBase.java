@@ -24,6 +24,13 @@ public class mDateBase extends SQLiteOpenHelper {
             +"num integer,"
             +"ifup text not null,"
             +"ifcplt text not null)";
+    public static final String CREATE_PIC = "create table Pictures("
+            + "ID integer primary key autoincrement,"
+            + "shop_id integer references Shop(ID),"
+            + "p_name text not null,"
+            + "p_text text,"
+            + "p_cloud tinyint not null,"
+            + "p_nopic tinyint not null)";
     private Context mContext;
 
     public mDateBase(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
@@ -36,13 +43,13 @@ public class mDateBase extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(CREATE_SHOP);
         sqLiteDatabase.execSQL(CREATE_GOODS);
         sqLiteDatabase.execSQL(CREATE_NEEDS);
+        sqLiteDatabase.execSQL(CREATE_PIC);
         sqLiteDatabase.execSQL("alter table Goods add 'num' integer default 0 ");
         Toast.makeText(mContext,"创建数据库成功",Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        sqLiteDatabase.execSQL("alter table Goods add 'num' integer default 0 ");
         Toast.makeText(mContext,"升级数据库至版本2成功",Toast.LENGTH_LONG).show();
     }
 }
