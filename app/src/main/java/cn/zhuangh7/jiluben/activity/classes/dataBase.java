@@ -126,6 +126,28 @@ public class dataBase {
         return false;
     }
     //还需要一波读取
+    public items[] readItem(int shopId){
+        //TODO 读取数据库所有数据
+
+        if (isInit) {
+            items[] itemses;
+            int tag = 0;
+            items item;
+            Cursor cursor = mDateBase.rawQuery("select ID,p_name,p_text,p_cloud,p_nopic from Pictures where shop_id = ?", new String[]{""+shopId});
+            try {
+                itemses = new items[cursor.getCount()];
+                while (cursor.moveToNext()) {
+                    item = new items(cursor.getInt(0), cursor.getString(1), shopId, cursor.getString(2), (cursor.getInt(3) == 1 ? true : false), (cursor.getInt(4) == 1 ? true : false));
+                    itemses[tag++] = item;
+                }
+                return itemses;
+            }catch (Exception e){
+                return null;
+            }
+
+        }
+        return null;
+    }
 
     public int addShop(String name,String pos,String tel){
         if(isInit){
