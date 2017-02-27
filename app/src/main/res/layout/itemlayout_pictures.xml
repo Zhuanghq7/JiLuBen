@@ -8,34 +8,53 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="3dp"
-        android:background="@color/white">
+        android:background="@drawable/shape">
 
-        <ImageView
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/cancel"
-            android:id="@+id/imageView2" />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@android:color/holo_orange_light"></LinearLayout>
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:background="@color/white">
+            android:padding="3dp"
+            android:background="@color/white">
 
-        <TextView
-            android:text="TextView"
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/cancel"
+                android:id="@+id/item_pic_pic" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/deepegray"></LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/textView12" />
+            android:padding="10dp"
+            android:background="@color/whitegray">
+
+            <TextView
+                android:text="P_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/item_pic_text_name"
+                android:layout_marginBottom="5dp"
+                android:textStyle="bold"
+                android:textColor="@color/deepblue" />
+
+            <TextView
+                android:text="TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/item_pic_text_text"
+                android:textColor="@color/verydeepegray" />
+        </LinearLayout>
+
+
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:background="@color/white"></LinearLayout>
+
 </LinearLayout>

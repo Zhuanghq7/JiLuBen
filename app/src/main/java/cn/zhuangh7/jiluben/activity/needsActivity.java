@@ -3,9 +3,11 @@ package cn.zhuangh7.jiluben.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -18,6 +20,7 @@ import android.text.util.Linkify;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -36,8 +39,10 @@ import java.util.List;
 
 import cn.zhuangh7.jiluben.R;
 import cn.zhuangh7.jiluben.activity.adapter.detailAdapter;
+import cn.zhuangh7.jiluben.activity.adapter.newAdapter;
 import cn.zhuangh7.jiluben.activity.classes.addNeedsDialog;
 import cn.zhuangh7.jiluben.activity.classes.dataBase;
+import cn.zhuangh7.jiluben.activity.classes.items;
 import cn.zhuangh7.jiluben.activity.classes.mainItem;
 import cn.zhuangh7.jiluben.activity.classes.needsItem;
 
@@ -48,10 +53,13 @@ import cn.zhuangh7.jiluben.activity.classes.needsItem;
 
 public class needsActivity extends BaseActivity {
     List<needsItem> goods = new ArrayList<needsItem>();
+    List<items> itemses = new ArrayList<items>();
     private static final String LOG_TAG = "secondDev";
     SwipeMenuListView mListView;
     detailAdapter mAdapter;
+    newAdapter MAdapter;
     needsItem[] goodss;
+    items[] itemss;
     dataBase mdb;//数据库
     mainItem shop;
     TextView name;
@@ -104,7 +112,8 @@ public class needsActivity extends BaseActivity {
             }
         });
 
-        initgoods();
+        //initgoods();
+        inititems();//TODO listview 数据初始化
 
         SwipeMenuCreator creator = new SwipeMenuCreator() {
 
@@ -146,7 +155,9 @@ public class needsActivity extends BaseActivity {
             }
         };
 
-        mAdapter = new detailAdapter(getApplicationContext(), R.layout.itemlayout_needs,goods);
+        //mAdapter = new detailAdapter(getApplicationContext(), R.layout.itemlayout_needs,goods);
+        MAdapter = new newAdapter(getApplicationContext(), itemses, this);
+        //TODO 设置adapter与creator
         mListView.setAdapter(mAdapter);
         mListView.setMenuCreator(creator);
         mListView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
@@ -154,12 +165,15 @@ public class needsActivity extends BaseActivity {
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
                 switch(index){
                     case 0:
-                        mdb.upNeeds(goods.get(position).getID());
-                        updateGoods();
+                        Toast.makeText(needsActivity.this,"button_1",Toast.LENGTH_SHORT).show();
+                        /*mdb.upNeeds(goods.get(position).getID());
+                        updateGoods();*/
                         break;
                     case 1:
-                        mdb.deleteNeeds(goods.get(position).getID());
-                        updateGoods();
+
+                        Toast.makeText(needsActivity.this,"button_2",Toast.LENGTH_SHORT).show();
+                        /*mdb.deleteNeeds(goods.get(position).getID());
+                        updateGoods();*/
                         break;
                 }
                 return false;
@@ -194,14 +208,42 @@ public class needsActivity extends BaseActivity {
         }
     }
 
+    private void inititems(){
+        if(itemses!=null){
+            itemses.clear();
+        }
+        itemss = mdb.readItem(shop.getID());
+        for(int i = 0 ;i<itemss.length;i++) {
+            itemses.add(itemss[i]);
+        }
+    }
     public void old_onAddDetail(View view) {
         addNeedsDialog dialog = new addNeedsDialog();
         dialog.show(getFragmentManager(), "NeedsDialog");
     }
     public void onAddDetail_2(View view){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("note1");
-        builder.create().show();
+        //TODO 显示输入dialog
+
+        final EditText editText = new EditText(this);
+        AlertDialog.Builder inputDialog = new AlertDialog.Builder(this);
+        inputDialog.setView(editText).setTitle("新的记录");
+        final AlertDialog a = inputDialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                int id = mdb.newText(getName(), shop.getID(), editText.getText().toString());
+                if(id>=0){
+                    Toast.makeText(needsActivity.this,"添加成功,id:"+id,Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(needsActivity.this,"添加失败",Toast.LENGTH_SHORT).show();
+                }
+            }
+        }).show();
+        inputDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                a.dismiss();
+            }
+        });
     }
     public void onAddDetail(View view){
         Log.d(LOG_TAG, "nothing to show");
@@ -227,6 +269,29 @@ public class needsActivity extends BaseActivity {
             //do nothing;
         }
         return temp;
+    }
+
+    private String getName(){
+        return new SimpleDateFormat("yyyy_MM_dd-HH_mm_ss").format(new Date());
+    }
+    private File getFileByName(String name){
+        Environment.getExternalStorageState();
+        File mediaStorageDir = null;
+        try{
+            mediaStorageDir = new File(
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"moms");
+            Log.d(LOG_TAG,"created mediaStorageDir sucessfully"+mediaStorageDir);
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+            Log.d(LOG_TAG, "Error in creating mediaStorageDir:" + mediaStorageDir);
+        }
+        if(!mediaStorageDir.exists()){
+            return null;
+        }
+        File mediaFile;
+        mediaFile = new File(mediaStorageDir.getPath() + File.separator + "IMG_" + name + ".jpg");
+        return mediaFile;
     }
     //返回一个文件
     private File getOutputMediaFile(){
@@ -369,6 +434,41 @@ public class needsActivity extends BaseActivity {
                 }
             }
         }
+    }
+
+    public Bitmap setImageByName(String name,ImageView image){
+
+
+        File imageFile = getFileByName(name);
+
+        BitmapFactory.Options factoryOptions = new BitmapFactory.Options();
+
+        factoryOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(imageFile.getPath(), factoryOptions);
+
+        int imageWidth = factoryOptions.outWidth;
+        int imageHeight = factoryOptions.outHeight;
+
+        int viewWidth = image.getWidth();
+        int viewHeight = viewWidth * imageHeight / imageWidth;
+
+        // Determine how much to scale down the image
+        int scaleFactor = Math.min(imageWidth / viewWidth, imageHeight
+                / viewHeight);
+
+        // Decode the image file into a Bitmap sized to fill the
+        // View
+
+        factoryOptions.inJustDecodeBounds = false;
+        factoryOptions.inSampleSize = scaleFactor;
+        factoryOptions.inPurgeable = true;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getPath(),
+                factoryOptions);
+
+        //image.setImageBitmap(bitmap);
+
+        return bitmap;
     }
 
 

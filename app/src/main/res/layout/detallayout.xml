@@ -116,18 +116,19 @@
             <com.baoyz.swipemenulistview.SwipeMenuListView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/needs_listview" />
+                android:id="@+id/needs_listview"
+                android:background="@color/background_gray" />
 
             <RelativeLayout android:layout_height="60dp"
                 android:layout_width="60dp"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginBottom="22dp"
-                android:layout_marginRight="15dp"
+                android:layout_marginRight="25dp"
                 android:onClick="onAddDetail">
 
                 <ImageView
-                    android:background="@drawable/add_detail"
+                    android:background="@drawable/add_photo"
                     android:id="@+id/imageView"
                     android:onClick="onAddDetail"
                     android:layout_centerVertical="true"

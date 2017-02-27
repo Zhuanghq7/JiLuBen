@@ -137,7 +137,7 @@ public class dataBase {
             try {
                 itemses = new items[cursor.getCount()];
                 while (cursor.moveToNext()) {
-                    item = new items(cursor.getInt(0), cursor.getString(1), shopId, cursor.getString(2), (cursor.getInt(3) == 1 ? true : false), (cursor.getInt(4) == 1 ? true : false));
+                    item = new items(cursor.getInt(0), cursor.getString(1), shopId, cursor.getString(2), cursor.getInt(3) == 1 , cursor.getInt(4) !=1);
                     itemses[tag++] = item;
                 }
                 return itemses;
