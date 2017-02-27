@@ -3,6 +3,7 @@ package cn.zhuangh7.jiluben.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -20,8 +21,10 @@ import android.text.util.Linkify;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,7 +58,7 @@ public class needsActivity extends BaseActivity {
     List<needsItem> goods = new ArrayList<needsItem>();
     List<items> itemses = new ArrayList<items>();
     private static final String LOG_TAG = "secondDev";
-    SwipeMenuListView mListView;
+    ListView mListView;
     detailAdapter mAdapter;
     newAdapter MAdapter;
     needsItem[] goodss;
@@ -83,7 +86,7 @@ public class needsActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detallayout);
-        mListView = (SwipeMenuListView) findViewById(R.id.needs_listview);
+        mListView = (ListView) findViewById(R.id.needs_listview);
         mdb = new dataBase(getApplicationContext());
         Intent intent = getIntent();
         int ID = intent.getExtras().getInt("ID");
@@ -115,75 +118,16 @@ public class needsActivity extends BaseActivity {
         //initgoods();
         inititems();//TODO listview 数据初始化
 
-        SwipeMenuCreator creator = new SwipeMenuCreator() {
-
-            @Override
-            public void create(SwipeMenu menu) {
-                // create "open" item
-                SwipeMenuItem openItem = new SwipeMenuItem(
-                        getApplicationContext());
-                // set item background
-                openItem.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9,
-                        0xCE)));
-                // set item width
-                openItem.setWidth(dp2px(90));
-                // set item title
-                openItem.setTitle("报货");
-                // set item title fontsize
-                openItem.setTitleSize(18);
-                // set item title font color
-                openItem.setTitleColor(Color.WHITE);
-                // add to menu
-                menu.addMenuItem(openItem);
-                // TODO donot use open item
-
-                // create "delete" item
-                SwipeMenuItem deleteItem = new SwipeMenuItem(
-                        getApplicationContext());
-                // set item background
-                deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
-                        0x3F, 0x25)));
-                // set item width
-                deleteItem.setWidth(dp2px(90));
-                // set a icon
-                //deleteItem.setIcon(R.drawable.add);
-                deleteItem.setTitle("完成");
-                deleteItem.setTitleColor(Color.WHITE);
-                deleteItem.setTitleSize(18);
-                // add to menu
-                menu.addMenuItem(deleteItem);
-            }
-        };
-
         //mAdapter = new detailAdapter(getApplicationContext(), R.layout.itemlayout_needs,goods);
         MAdapter = new newAdapter(getApplicationContext(), itemses, this);
         //TODO 设置adapter与creator
-        mListView.setAdapter(mAdapter);
-        mListView.setMenuCreator(creator);
-        mListView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-                switch(index){
-                    case 0:
-                        Toast.makeText(needsActivity.this,"button_1",Toast.LENGTH_SHORT).show();
-                        /*mdb.upNeeds(goods.get(position).getID());
-                        updateGoods();*/
-                        break;
-                    case 1:
+        mListView.setAdapter(MAdapter);
 
-                        Toast.makeText(needsActivity.this,"button_2",Toast.LENGTH_SHORT).show();
-                        /*mdb.deleteNeeds(goods.get(position).getID());
-                        updateGoods();*/
-                        break;
-                }
-                return false;
-            }
-        });
         //TODO set listview
 
 
     }
-    private int dp2px(int dp) {
+    public int dp2px(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                 getResources().getDisplayMetrics());
     }
@@ -227,7 +171,7 @@ public class needsActivity extends BaseActivity {
         final EditText editText = new EditText(this);
         AlertDialog.Builder inputDialog = new AlertDialog.Builder(this);
         inputDialog.setView(editText).setTitle("新的记录");
-        final AlertDialog a = inputDialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+        inputDialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 int id = mdb.newText(getName(), shop.getID(), editText.getText().toString());
@@ -237,7 +181,19 @@ public class needsActivity extends BaseActivity {
                     Toast.makeText(needsActivity.this,"添加失败",Toast.LENGTH_SHORT).show();
                 }
             }
-        }).show();
+        });
+        AlertDialog tempDialog = inputDialog.create();
+        tempDialog.setView(editText, 0, 0, 0, 0);
+
+        /** 3.自动弹出软键盘 **/
+        tempDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            public void onShow(DialogInterface dialog) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+            }
+        });
+        tempDialog.show();
+        final AlertDialog a =tempDialog;
         inputDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -246,6 +202,7 @@ public class needsActivity extends BaseActivity {
         });
     }
     public void onAddDetail(View view){
+        //TODO 开始拍照
         Log.d(LOG_TAG, "nothing to show");
         Uri fileUri;
         fileUri = getOutputMediaFileUri();
@@ -274,7 +231,7 @@ public class needsActivity extends BaseActivity {
     private String getName(){
         return new SimpleDateFormat("yyyy_MM_dd-HH_mm_ss").format(new Date());
     }
-    private File getFileByName(String name){
+    public File getFileByName(String name){
         Environment.getExternalStorageState();
         File mediaStorageDir = null;
         try{
@@ -389,6 +346,12 @@ public class needsActivity extends BaseActivity {
                     }
 
 
+
+
+
+                } else {
+
+                    Log.d(LOG_TAG,"data IS null, file saved on target position.");
                     createPicSuccess = true;//文件创建成功
 
                     //最后，先将信息写入数据库
@@ -397,40 +360,6 @@ public class needsActivity extends BaseActivity {
                         int id = mdb.newPic(newPicName, shop.getID(), null);
                         Toast.makeText(this, "录入数据库成功，id" + id,Toast.LENGTH_SHORT).show();
                     }
-
-
-                } else {
-
-                    Log.d(LOG_TAG,"data IS null, file saved on target position.");
-                    // If there is no thumbnail image data, the image
-                    // will have been stored in the target output URI.
-
-                    // Resize the full image to fit in out image view.
-                    /*int width = imageView.getWidth();
-                    int height = imageView.getHeight();
-
-                    BitmapFactory.Options factoryOptions = new BitmapFactory.Options();
-
-                    factoryOptions.inJustDecodeBounds = true;
-                    BitmapFactory.decodeFile(fileUri.getPath(), factoryOptions);
-
-                    int imageWidth = factoryOptions.outWidth;
-                    int imageHeight = factoryOptions.outHeight;
-
-                    // Determine how much to scale down the image
-                    int scaleFactor = Math.min(imageWidth / width, imageHeight
-                            / height);
-
-                    // Decode the image file into a Bitmap sized to fill the
-                    // View
-                    factoryOptions.inJustDecodeBounds = false;
-                    factoryOptions.inSampleSize = scaleFactor;
-                    factoryOptions.inPurgeable = true;
-
-                    Bitmap bitmap = BitmapFactory.decodeFile(fileUri.getPath(),
-                            factoryOptions);
-
-                    imageView.setImageBitmap(bitmap);*/
                 }
             }
         }
@@ -449,12 +378,11 @@ public class needsActivity extends BaseActivity {
         int imageWidth = factoryOptions.outWidth;
         int imageHeight = factoryOptions.outHeight;
 
-        int viewWidth = image.getWidth();
+        int viewWidth = image.getLayoutParams().width;
         int viewHeight = viewWidth * imageHeight / imageWidth;
 
         // Determine how much to scale down the image
-        int scaleFactor = Math.min(imageWidth / viewWidth, imageHeight
-                / viewHeight);
+        int scaleFactor = Math.min(imageWidth / viewWidth, imageHeight / viewHeight);
 
         // Decode the image file into a Bitmap sized to fill the
         // View
@@ -469,6 +397,26 @@ public class needsActivity extends BaseActivity {
         //image.setImageBitmap(bitmap);
 
         return bitmap;
+    }
+
+    public double getXY(String name){
+        File imageFile = getFileByName(name);
+
+        BitmapFactory.Options factoryOptions = new BitmapFactory.Options();
+
+        factoryOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(imageFile.getPath(), factoryOptions);
+
+        double imageWidth = factoryOptions.outWidth;
+        double imageHeight = factoryOptions.outHeight;
+        if(imageWidth!=0){
+            return imageHeight/imageWidth;
+        }else{
+            return 0;
+        }
+    }
+    public void changeImageView(ImageView imageView,String name){
+
     }
 
 

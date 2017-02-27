@@ -2,6 +2,7 @@ package cn.zhuangh7.jiluben.activity.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,13 +41,28 @@ public class newAdapter extends BaseAdapter {
     }
 
     @Override
+    public int getViewTypeCount() {
+        return 2;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        items item = mlist.get(position);
+        if (item.isIfPic()) {
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
+    @Override
     public Object getItem(int position) {
         return mlist.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return mlist.get(position).getId();
+        return position;
     }
 
     @Override
@@ -61,7 +77,11 @@ public class newAdapter extends BaseAdapter {
                 viewholder.imageView = (ImageView) convertView.findViewById(R.id.item_pic_pic);
                 viewholder.name.setText(item.getName());
                 viewholder.editText.setText(item.getText());
-                viewholder.imageView.setImageBitmap(activity.setImageByName(item.getName(),viewholder.imageView));
+                //viewholder.imageView.setImageBitmap(activity.setImageByName(item.getName(),viewholder.imageView));
+                viewholder.imageView.setAdjustViewBounds(true);
+                //viewholder.imageView.setMaxHeight(activity.dp2px(200));
+                activity.changeImageView(viewholder.imageView,item.getName());
+                viewholder.imageView.setImageURI(Uri.fromFile(activity.getFileByName(item.getName())));
                 convertView.setTag(viewholder);
             }else{
                 ViewHolder4Text viewholder = new ViewHolder4Text();
