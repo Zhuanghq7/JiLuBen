@@ -42,33 +42,89 @@ public class dataBase {
         return -1;
     }
     public boolean deletePic(String name,int shopId){
+        if(isInit){
+            if(name.equals("")){
+                return false;
+            }
+            mDateBase.execSQL("delete from Pictures where p_name = ? and shop_id = ?",new Object[]{name,shopId});
+            return true;
+        }
         //TODO 删除照片，同时删除text
         return false;
     }
     public boolean editPic(String name,int shopId,String text){
         //TODO 修改照片对应信息
+        if(isInit){
+            if(name.equals("")){
+                return false;
+            }
+            mDateBase.execSQL("update Pictures set p_text = ? where p_name = ? and shop_id = ?",new Object[]{text,name,shopId});
+            return true;
+        }
         return false;
     }
 
 
-    public int newText(String name,String text){
+    public int newText(String name,int shopId,String text){
         //TODO 新的text text不能为null 返回id
+        if(isInit){
+            if (name.equals("")||text.equals("")) {
+                return -2;
+            }
+            mDateBase.execSQL("insert into Pictures(shop_id,p_name,p_text,p_cloud,p_nopic)values(?,?,?,?,?)",new Object[]{shopId,name,text,0,1});
+            Cursor cursor = mDateBase.rawQuery("select ID from Pictures where p_name = ? and shop_id = ?", new String[]{name,""+shopId});
+            while(cursor.moveToNext()){
+                int ID = cursor.getInt(0);
+                return ID;
+            }
+        }
         return -1;
     }
-    public boolean editText(String name,String text){
-        //TODO 修改文本
-        return false;
+    public boolean editText(String name,int shopId,String text) {
+        return editPic(name, shopId, text);
     }
+
     public boolean deleteText(String name,int shopId){
-        //TODO 懒得写了.
+        //TODO 懒得写了
+        if(isInit){
+            mDateBase.execSQL("delete from Pictures where p_name = ? and shop_id = ?", new Object[]{name, shopId});
+            return true;
+        }
         return false;
     }
 
-    public boolean upclould(String name,int shop_id){
+    public boolean upclould(String name,int shop_Id){
         //TODO 上传字段设置为1
+        if(isInit){
+            try {
+                mDateBase.execSQL("update Pictures set p_cloud = ? where p_name = ? and shop_id = ?", new Object[]{1, name, shop_Id});
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+        }
         return false;
     }
 
+    public boolean ifPic(String name,int shop_Id){
+        //TODO 是否是图片
+        if(isInit){
+            try{
+                Cursor cursor = mDateBase.rawQuery("select p_nopic from Pictures where p_name = ? and shop_id = ?", new String[]{name, ""+shop_Id});
+                while(cursor.moveToNext()){
+                    int ifpic = cursor.getInt(0);
+                    if(ifpic == 1){
+                        return false;
+                    }else{
+                        return true;
+                    }
+                }
+            }catch (Exception e){
+                return false;
+            }
+        }
+        return false;
+    }
     //还需要一波读取
 
     public int addShop(String name,String pos,String tel){

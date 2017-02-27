@@ -212,13 +212,6 @@ public class needsActivity extends BaseActivity {
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
             cameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
 
-            //开始之前，先将信息写入数据库
-            if(createPicSuccess){
-                createPicSuccess = false;
-                int id = mdb.newPic(newPicName, shop.getID(), null);
-                Toast.makeText(this, "录入数据库成功，id" + id,Toast.LENGTH_SHORT).show();
-            }
-
             startActivityForResult(cameraIntent, 100);
         }else{
             //do nothing
@@ -267,7 +260,6 @@ public class needsActivity extends BaseActivity {
         mediaFile = new File(mediaStorageDir.getPath() + File.separator+ "IMG_" + timeStamp + ".jpg");
 
 
-        createPicSuccess = true;//文件创建成功
         return mediaFile;
     }
 
@@ -330,6 +322,18 @@ public class needsActivity extends BaseActivity {
                         Bitmap thumbnail = data.getParcelableExtra("data");
                         //imageView.setImageBitmap(thumbnail);
                     }
+
+
+                    createPicSuccess = true;//文件创建成功
+
+                    //最后，先将信息写入数据库
+                    if(createPicSuccess){
+                        createPicSuccess = false;
+                        int id = mdb.newPic(newPicName, shop.getID(), null);
+                        Toast.makeText(this, "录入数据库成功，id" + id,Toast.LENGTH_SHORT).show();
+                    }
+
+
                 } else {
 
                     Log.d(LOG_TAG,"data IS null, file saved on target position.");
