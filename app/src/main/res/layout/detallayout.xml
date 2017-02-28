@@ -113,10 +113,14 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <com.baoyz.swipemenulistview.SwipeMenuListView
+            <ListView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/needs_listview"
+                android:divider="#00000000"
+                android:dividerHeight="0dip"
+                android:stackFromBottom="true"
+                android:transcriptMode="alwaysScroll"
                 android:background="@color/background_gray" />
 
             <RelativeLayout android:layout_height="60dp"

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -18,9 +19,11 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.text.util.Linkify;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -122,6 +125,7 @@ public class needsActivity extends BaseActivity {
         MAdapter = new newAdapter(getApplicationContext(), itemses, this);
         //TODO 设置adapter与creator
         mListView.setAdapter(MAdapter);
+//        mListView.
 
         //TODO set listview
 
@@ -381,8 +385,15 @@ public class needsActivity extends BaseActivity {
         int viewWidth = image.getLayoutParams().width;
         int viewHeight = viewWidth * imageHeight / imageWidth;
 
+        Resources resources = this.getResources();
+        DisplayMetrics dm = resources.getDisplayMetrics();
+        float density1 = dm.density;
+        int width3 = dm.widthPixels-(int)(26*density1);
+        int height3 = dm.heightPixels;
+
+
         // Determine how much to scale down the image
-        int scaleFactor = Math.min(imageWidth / viewWidth, imageHeight / viewHeight);
+        int scaleFactor = imageWidth/width3;
 
         // Decode the image file into a Bitmap sized to fill the
         // View

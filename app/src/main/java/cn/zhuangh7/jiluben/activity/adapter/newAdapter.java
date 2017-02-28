@@ -68,6 +68,7 @@ public class newAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         items item = mlist.get(position);
+        //得到item
         if(convertView==null){
             if(item.isIfPic()){
                 ViewHolder4Pic viewholder = new ViewHolder4Pic();
@@ -80,8 +81,9 @@ public class newAdapter extends BaseAdapter {
                 //viewholder.imageView.setImageBitmap(activity.setImageByName(item.getName(),viewholder.imageView));
                 viewholder.imageView.setAdjustViewBounds(true);
                 //viewholder.imageView.setMaxHeight(activity.dp2px(200));
-                activity.changeImageView(viewholder.imageView,item.getName());
-                viewholder.imageView.setImageURI(Uri.fromFile(activity.getFileByName(item.getName())));
+                //activity.changeImageView(viewholder.imageView,item.getName());
+                //viewholder.imageView.setImageURI(Uri.fromFile(activity.getFileByName(item.getName())));
+                viewholder.imageView.setImageBitmap(activity.setImageByName(item.getName(),viewholder.imageView));
                 convertView.setTag(viewholder);
             }else{
                 ViewHolder4Text viewholder = new ViewHolder4Text();
@@ -91,18 +93,22 @@ public class newAdapter extends BaseAdapter {
                 viewholder.name.setText(item.getName());
                 viewholder.editText.setText(item.getText());
                 convertView.setTag(viewholder);
-
             }
         }else{
             if (item.isIfPic()) {
                 ViewHolder4Pic viewholder = (ViewHolder4Pic) convertView.getTag();
                 viewholder.editText.setText(item.getText());
                 viewholder.name.setText(item.getName());
+                viewholder.imageView.setImageBitmap(activity.setImageByName(item.getName(),viewholder.imageView));
+                convertView.setTag(viewholder);
+                return convertView;
 
             }else{
                 ViewHolder4Text viewholder = (ViewHolder4Text) convertView.getTag();
                 viewholder.name.setText(item.getName());
                 viewholder.editText.setText(item.getText());
+                convertView.setTag(viewholder);
+                return convertView;
             }
         }
         return convertView;
@@ -114,7 +120,7 @@ public class newAdapter extends BaseAdapter {
     }
     class ViewHolder4Pic{
         private TextView editText;
-        private ImageView imageView;
         private TextView name;
+        private ImageView imageView;
     }
 }
