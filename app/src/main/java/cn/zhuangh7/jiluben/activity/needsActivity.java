@@ -46,6 +46,7 @@ import java.util.List;
 import cn.zhuangh7.jiluben.R;
 import cn.zhuangh7.jiluben.activity.adapter.detailAdapter;
 import cn.zhuangh7.jiluben.activity.adapter.newAdapter;
+import cn.zhuangh7.jiluben.activity.classes.ImageManager;
 import cn.zhuangh7.jiluben.activity.classes.addNeedsDialog;
 import cn.zhuangh7.jiluben.activity.classes.dataBase;
 import cn.zhuangh7.jiluben.activity.classes.items;
@@ -62,6 +63,7 @@ public class needsActivity extends BaseActivity {
     List<items> itemses = new ArrayList<items>();
     private static final String LOG_TAG = "secondDev";
     ListView mListView;
+    public ImageManager imageManager;
     detailAdapter mAdapter;
     newAdapter MAdapter;
     needsItem[] goodss;
@@ -87,6 +89,7 @@ public class needsActivity extends BaseActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        Log.d(LOG_TAG, "1");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detallayout);
         mListView = (ListView) findViewById(R.id.needs_listview);
@@ -120,7 +123,7 @@ public class needsActivity extends BaseActivity {
 
         //initgoods();
         inititems();//TODO listview 数据初始化
-
+        imageManager = new ImageManager(itemses, this);
         //mAdapter = new detailAdapter(getApplicationContext(), R.layout.itemlayout_needs,goods);
         MAdapter = new newAdapter(getApplicationContext(), itemses, this);
         //TODO 设置adapter与creator
@@ -349,10 +352,6 @@ public class needsActivity extends BaseActivity {
                         //imageView.setImageBitmap(thumbnail);
                     }
 
-
-
-
-
                 } else {
 
                     Log.d(LOG_TAG,"data IS null, file saved on target position.");
@@ -369,7 +368,7 @@ public class needsActivity extends BaseActivity {
         }
     }
 
-    public Bitmap setImageByName(String name,ImageView image){
+    public Bitmap setImageByName(String name){
 
 
         File imageFile = getFileByName(name);
@@ -381,9 +380,6 @@ public class needsActivity extends BaseActivity {
 
         int imageWidth = factoryOptions.outWidth;
         int imageHeight = factoryOptions.outHeight;
-
-        int viewWidth = image.getLayoutParams().width;
-        int viewHeight = viewWidth * imageHeight / imageWidth;
 
         Resources resources = this.getResources();
         DisplayMetrics dm = resources.getDisplayMetrics();

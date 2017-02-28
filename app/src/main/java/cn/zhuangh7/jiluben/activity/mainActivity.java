@@ -131,7 +131,7 @@ public class mainActivity extends BaseActivity {
                 return false;
             }
         });
-
+        Log.e("HUAWEI", "SB");
 
     }
 

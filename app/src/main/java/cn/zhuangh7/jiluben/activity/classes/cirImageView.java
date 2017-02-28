@@ -55,6 +55,9 @@ public class cirImageView extends ImageView{
             final Rect rectDest = new Rect(0,0,getWidth(),getHeight());
             paint.reset();
             canvas.drawBitmap(b, rectSrc, rectDest, paint);
+            if(!b.isRecycled()){
+                b.recycle();
+            }
 
         } else {
             super.onDraw(canvas);

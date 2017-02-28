@@ -3,6 +3,7 @@ package cn.zhuangh7.jiluben.activity.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,7 +68,10 @@ public class newAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        Log.d("HUAWEI", "SB");
+        Log.e("HUAWEI", "SB");
         items item = mlist.get(position);
+        activity.imageManager.setPosition(position);
         //得到item
         if(convertView==null){
             if(item.isIfPic()){
@@ -80,10 +84,8 @@ public class newAdapter extends BaseAdapter {
                 viewholder.editText.setText(item.getText());
                 //viewholder.imageView.setImageBitmap(activity.setImageByName(item.getName(),viewholder.imageView));
                 viewholder.imageView.setAdjustViewBounds(true);
-                //viewholder.imageView.setMaxHeight(activity.dp2px(200));
-                //activity.changeImageView(viewholder.imageView,item.getName());
-                //viewholder.imageView.setImageURI(Uri.fromFile(activity.getFileByName(item.getName())));
-                viewholder.imageView.setImageBitmap(activity.setImageByName(item.getName(),viewholder.imageView));
+                //老方法用的这个   viewholder.imageView.setImageBitmap(activity.setImageByName(item.getName()));
+                viewholder.imageView.setImageBitmap(activity.imageManager.getImageByposition(position));
                 convertView.setTag(viewholder);
             }else{
                 ViewHolder4Text viewholder = new ViewHolder4Text();
@@ -99,7 +101,8 @@ public class newAdapter extends BaseAdapter {
                 ViewHolder4Pic viewholder = (ViewHolder4Pic) convertView.getTag();
                 viewholder.editText.setText(item.getText());
                 viewholder.name.setText(item.getName());
-                viewholder.imageView.setImageBitmap(activity.setImageByName(item.getName(),viewholder.imageView));
+                //viewholder.imageView.setImageBitmap(activity.setImageByName(item.getName()));
+                viewholder.imageView.setImageBitmap(activity.imageManager.getImageByposition(position));
                 convertView.setTag(viewholder);
                 return convertView;
 
