@@ -1,20 +1,17 @@
 package cn.zhuangh7.jiluben.activity.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
-
 import java.util.List;
 
 import cn.zhuangh7.jiluben.R;
@@ -22,7 +19,9 @@ import cn.zhuangh7.jiluben.activity.classes.items;
 import cn.zhuangh7.jiluben.activity.needsActivity;
 
 /**
- * Created by Zhuangh7 on 2017/2/27.
+ * Using to provid a two kind of layout itemlist
+
+ * Created by Zhuangh7 on 2017/2/27.HUAWEI_SB
  */
 
 public class newAdapter extends BaseAdapter {
@@ -80,6 +79,7 @@ public class newAdapter extends BaseAdapter {
                 convertView = mInflater.inflate(R.layout.itemlayout_pictures, null);
                 viewholder.name = (TextView) convertView.findViewById(R.id.item_pic_text_name);
                 viewholder.editText = (TextView) convertView.findViewById(R.id.item_pic_text_text);
+                //viewholder.name.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
                 viewholder.imageView = (ImageView) convertView.findViewById(R.id.item_pic_pic);
                 viewholder.name.setText(item.getName());
                 viewholder.editText.setText(item.getText());
@@ -92,8 +92,6 @@ public class newAdapter extends BaseAdapter {
                 }else{
                     viewholder.imageView.setImageBitmap(tempbitmap);
                 }
-
-
                 convertView.setTag(viewholder);
             }else{
                 ViewHolder4Text viewholder = new ViewHolder4Text();
@@ -130,13 +128,16 @@ public class newAdapter extends BaseAdapter {
         return convertView;
     }
 
-    class ViewHolder4Text{
+    private class ViewHolder4Text{
         private TextView editText;
         private TextView name;
     }
-    class ViewHolder4Pic{
+    private class ViewHolder4Pic{
         private TextView editText;
         private TextView name;
         private ImageView imageView;
     }
+
+
+
 }

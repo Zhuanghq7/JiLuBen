@@ -4,20 +4,30 @@ import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
 import java.io.File;
 import java.util.List;
 
+import cn.zhuangh7.jiluben.activity.needsActivity;
+
 /**
+ * some interesting work
  * Created by Zhuangh7 on 2017/2/28.HUAWEI_SB
  */
 public class ImageManager extends Thread {
+    MyHandle myHandle = new MyHandle();
+    int fun = 1;
+
     @Override
     public void run() {
         super.run();
+
         int i = itemsList.size();
         int I = 0;
         if (itemsList.size() >= 1) {
@@ -26,6 +36,14 @@ public class ImageManager extends Thread {
                 if (temp.isIfPic()) {
                     Picture newPic = new Picture(i, loadBitmap(temp.getName()));
                     picture[1][I++] = newPic;
+
+                    //TODO send refresh message
+                    Message msg = new Message();
+                    Bundle b = new Bundle();
+                    b.putInt("fun", 1);
+                    msg.setData(b);
+                    myHandle.sendMessage(msg);
+
                     if (I == 10) {
                         break;
                     }
@@ -38,21 +56,26 @@ public class ImageManager extends Thread {
             }
             //nowUse = 1;
         }
+        //TODO send refresh message
+        Message msg = new Message();
+        Bundle b = new Bundle();
+        b.putInt("fun", 1);
+        msg.setData(b);
+        myHandle.sendMessage(msg);
     }
 
     private Picture picture[][] = new Picture[3][10];
     private List<items> itemsList;
-    Activity activity;
+    needsActivity activity;
     private int now = 1;
     private int up = 0;
     private int down = 2;
-    private int tag = -2;
     private boolean upload = false;
     private boolean download = false;
     private boolean isUp = true;//判断当前listview是向上还是向下滚动
     private int position = -1;
 
-    public ImageManager(List<items> itemsList, Activity activity) {
+    public ImageManager(List<items> itemsList, needsActivity activity) {
         this.itemsList = itemsList;
         this.activity = activity;
         picture[0] = new Picture[10];
@@ -64,25 +87,32 @@ public class ImageManager extends Thread {
     }
 
     public Bitmap getImageByposition(int position) {
-        if(tag>=0&&tag<10&&picture[now][tag]!=null&&picture[now][tag].getPosition() == position){
-            return picture[now][tag].getImage();
+        int tempI = 0;
+        for (; tempI < 10; tempI++) {
+
+            if (picture[now][tempI] != null && picture[now][tempI].getPosition() == position) {
+                return picture[now][tempI].getImage();
+            }
         }
-        if(tag == -1){
-            tag = 0;
-        }
-        if (tag == -2) {
-            //第一次读图
-            tag = 0;
-            isUp = true;
-        } else if (isUp) {
-            tag++;
+        if (isUp) {
+            if (upload) {
+                download = true;
+                int temp = down;
+                down = now;
+                now = up;
+                up = temp;
+                upload = false;
+                return getImageByposition(position);
+            } else {
+                if (picture[now][9] == null) {
+                    return null;
+                    //TODO 说明当前列表未满，却请求加载，说明image还未载入内存；
+                }
+                loadImage(picture[now][9].getPosition() - 1, true, up);
+                return getImageByposition(position);
+            }
         } else {
-            tag--;
-        }//应该得到的图片位置
-        if (tag <= -1) {
-            //向下翻页
             if (download) {
-                tag = 9;
                 upload = true;
                 int temp;
                 temp = up;
@@ -90,41 +120,16 @@ public class ImageManager extends Thread {
                 now = down;
                 down = temp;
                 download = false;
-
+                return getImageByposition(position);
             } else {
-                //TODO load
+                if (picture[now][0] == null) {
+                    return null;
+                    //TODU as front
+                }
                 loadImage(picture[now][0].getPosition() + 1, false, down);
                 return getImageByposition(position);
             }
-        } else if (tag >= 10) {
-            //向上翻页
-            if (upload) {
-                tag = 0;
-                download = true;
-                int temp = down;
-                down = now;
-                now = up;
-                up = temp;
-                upload = false;
-            } else {
-                //TODO load
-                loadImage(picture[now][9].getPosition() - 1, true, up);
-                return getImageByposition(position);
-
-            }
         }
-        if (picture[now][tag] == null) {
-            return null;
-        } else {
-            //return picture[now][tag].getImage();
-            if (picture[now][tag].getPosition() != position) {
-                return null;
-            } else {
-                return picture[now][tag].getImage();
-            }
-            //return picture[now][tag].getPosition()==position?picture[now][tag].getImage():null;//最后返回now tag位置图片
-        }
-
     }
 
     private void loadImage(int position, boolean isUp, int load) {
@@ -232,27 +237,32 @@ public class ImageManager extends Thread {
             if (position > this.position) {
                 if (isUp) {
                     isUp = false;
-                    for (; tag >= 0 && tag < 9; tag--) {
-                        if (picture[now][tag] == null || picture[now][tag].getPosition() >= position) {
-                            tag++;
-                            break;
-                        }
-                    }
                 }
             } else {
                 if (!isUp) {
                     isUp = true;
-                    for (; tag <= 9 && tag > 0; tag++) {
-                        if (picture[now][tag] == null || picture[now][tag].getPosition() <= position) {
-                            tag--;
-                            break;
-                        }
-                    }
                 }
             }
         }
-
         this.position = position;
         //实时更新position，创建主动函数加载。
+    }
+
+    class MyHandle extends Handler {
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle b = msg.getData();
+            int fun = b.getInt("fun");
+            switch (fun) {
+                case 1:
+                    activity.MAdapter.notifyDataSetChanged();
+                    Log.e("111", "refresh");
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }

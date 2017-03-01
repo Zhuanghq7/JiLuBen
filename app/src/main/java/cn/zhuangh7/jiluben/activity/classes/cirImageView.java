@@ -50,7 +50,7 @@ public class cirImageView extends ImageView{
         Drawable drawable = getDrawable();
         if (null != drawable) {
             Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-            Bitmap b = getRoundBitmap(bitmap, 20);
+            Bitmap b = getRoundBitmap(bitmap, 16);
             final Rect rectSrc = new Rect(0, 0, b.getWidth(), b.getHeight());
             final Rect rectDest = new Rect(0,0,getWidth(),getHeight());
             paint.reset();
@@ -58,7 +58,6 @@ public class cirImageView extends ImageView{
             if(!b.isRecycled()){
                 b.recycle();
             }
-
         } else {
             super.onDraw(canvas);
         }
@@ -83,11 +82,11 @@ public class cirImageView extends ImageView{
         paint.setAntiAlias(true);
         canvas.drawARGB(0, 0, 0, 0);
         paint.setColor(color);
-        int x = bitmap.getWidth();
+        //int x = bitmap.getWidth();
 
-        canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
-        paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, rect, rect, paint);
+        canvas.drawRoundRect(rectF, roundPx, roundPx, paint);//圆角矩形
+        paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));//改变绘制模式
+        canvas.drawBitmap(bitmap, rect, rect, paint);//
         return output;
 
 

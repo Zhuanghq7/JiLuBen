@@ -40,6 +40,7 @@ import com.baoyz.swipemenulistview.SwipeMenuListView;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -55,6 +56,7 @@ import cn.zhuangh7.jiluben.activity.classes.needsItem;
 
 
 /**
+ * main activity
  * Created by Zhuangh7 on 2016/10/30.
  */
 
@@ -62,10 +64,10 @@ public class needsActivity extends BaseActivity {
     List<needsItem> goods = new ArrayList<needsItem>();
     List<items> itemses = new ArrayList<items>();
     private static final String LOG_TAG = "secondDev";
-    ListView mListView;
+    public ListView mListView;
     public ImageManager imageManager;
-    detailAdapter mAdapter;
-    newAdapter MAdapter;
+    public detailAdapter mAdapter;
+    public newAdapter MAdapter;
     needsItem[] goodss;
     items[] itemss;
     dataBase mdb;//数据库
@@ -77,6 +79,7 @@ public class needsActivity extends BaseActivity {
     ImageView click;
     String newPicName;
     boolean createPicSuccess = false;
+
 
     @Override
     protected void onResume() {
@@ -123,12 +126,12 @@ public class needsActivity extends BaseActivity {
 
         //initgoods();
         inititems();//TODO listview 数据初始化
-        imageManager = new ImageManager(itemses, this);
-        //mAdapter = new detailAdapter(getApplicationContext(), R.layout.itemlayout_needs,goods);
+        imageManager = new ImageManager(itemses, this);//TODO 图片助手初始化
         MAdapter = new newAdapter(getApplicationContext(), itemses, this);
-        //TODO 设置adapter与creator
         mListView.setAdapter(MAdapter);
-//        mListView.
+
+        //mAdapter = new detailAdapter(getApplicationContext(), R.layout.itemlayout_needs,goods);
+        //TODO 设置adapter与creator
 
         //TODO set listview
 
@@ -154,9 +157,7 @@ public class needsActivity extends BaseActivity {
             goods.clear();
         }
         goodss = mdb.readGoodsfromNeeds(shop.getID());
-        for(int i = 0;i<goodss.length;i++) {
-            goods.add(goodss[i]);
-        }
+        Collections.addAll(goods, goodss);
     }
 
     private void inititems(){
@@ -164,9 +165,7 @@ public class needsActivity extends BaseActivity {
             itemses.clear();
         }
         itemss = mdb.readItem(shop.getID());
-        for(int i = 0 ;i<itemss.length;i++) {
-            itemses.add(itemss[i]);
-        }
+        Collections.addAll(itemses, itemss);
     }
     public void old_onAddDetail(View view) {
         addNeedsDialog dialog = new addNeedsDialog();
@@ -219,8 +218,6 @@ public class needsActivity extends BaseActivity {
             cameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
 
             startActivityForResult(cameraIntent, 100);
-        }else{
-            //do nothing
         }
 
     }
@@ -250,6 +247,7 @@ public class needsActivity extends BaseActivity {
             e.printStackTrace();
             Log.d(LOG_TAG, "Error in creating mediaStorageDir:" + mediaStorageDir);
         }
+        assert mediaStorageDir != null;
         if(!mediaStorageDir.exists()){
             return null;
         }
@@ -274,6 +272,7 @@ public class needsActivity extends BaseActivity {
             Log.d(LOG_TAG, "Error in creating mediaStorageDir:" + mediaStorageDir);
         }
         //如果目录不存在那么新建一个
+        assert mediaStorageDir != null;
         if(!mediaStorageDir.exists()){
             if(!mediaStorageDir.mkdir())
             {
@@ -347,10 +346,10 @@ public class needsActivity extends BaseActivity {
                     Toast.makeText(this, "Image saved to:\n" + data.getData(),
                             Toast.LENGTH_LONG).show();
 
-                    if (data.hasExtra("data")) {
-                        Bitmap thumbnail = data.getParcelableExtra("data");
-                        //imageView.setImageBitmap(thumbnail);
-                    }
+//                    if (data.hasExtra("data")) {
+//                        Bitmap thumbnail = data.getParcelableExtra("data");
+//                        //imageView.setImageBitmap(thumbnail);
+//                    }
 
                 } else {
 
@@ -358,73 +357,14 @@ public class needsActivity extends BaseActivity {
                     createPicSuccess = true;//文件创建成功
 
                     //最后，先将信息写入数据库
-                    if(createPicSuccess){
-                        createPicSuccess = false;
-                        int id = mdb.newPic(newPicName, shop.getID(), null);
-                        Toast.makeText(this, "录入数据库成功，id" + id,Toast.LENGTH_SHORT).show();
-                    }
+                    createPicSuccess = false;
+                    int id = mdb.newPic(newPicName, shop.getID(), null);
+                    Toast.makeText(this, "录入数据库成功，id" + id,Toast.LENGTH_SHORT).show();
                 }
             }
         }
     }
 
-    public Bitmap setImageByName(String name){
-
-
-        File imageFile = getFileByName(name);
-
-        BitmapFactory.Options factoryOptions = new BitmapFactory.Options();
-
-        factoryOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(imageFile.getPath(), factoryOptions);
-
-        int imageWidth = factoryOptions.outWidth;
-        int imageHeight = factoryOptions.outHeight;
-
-        Resources resources = this.getResources();
-        DisplayMetrics dm = resources.getDisplayMetrics();
-        float density1 = dm.density;
-        int width3 = dm.widthPixels-(int)(26*density1);
-        int height3 = dm.heightPixels;
-
-
-        // Determine how much to scale down the image
-        int scaleFactor = imageWidth/width3;
-
-        // Decode the image file into a Bitmap sized to fill the
-        // View
-
-        factoryOptions.inJustDecodeBounds = false;
-        factoryOptions.inSampleSize = scaleFactor;
-        factoryOptions.inPurgeable = true;
-
-        Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getPath(),
-                factoryOptions);
-
-        //image.setImageBitmap(bitmap);
-
-        return bitmap;
-    }
-
-    public double getXY(String name){
-        File imageFile = getFileByName(name);
-
-        BitmapFactory.Options factoryOptions = new BitmapFactory.Options();
-
-        factoryOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(imageFile.getPath(), factoryOptions);
-
-        double imageWidth = factoryOptions.outWidth;
-        double imageHeight = factoryOptions.outHeight;
-        if(imageWidth!=0){
-            return imageHeight/imageWidth;
-        }else{
-            return 0;
-        }
-    }
-    public void changeImageView(ImageView imageView,String name){
-
-    }
 
 
 }
