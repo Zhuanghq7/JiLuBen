@@ -12,22 +12,47 @@ import java.io.File;
 import java.util.List;
 
 /**
- * Created by Zhuangh7 on 2017/2/28.
+ * Created by Zhuangh7 on 2017/2/28.HUAWEI_SB
  */
-public class ImageManager {
-    Picture picture[][] = new Picture[3][10];
-    List<items> itemsList;
-    Activity activity;
-    int now = 1;
-    int up = 0;
-    int down = 2;
-    int tag = -2;
-    boolean upload = false;
-    boolean download = false;
-    boolean isUp;//判断当前listview是向上还是向下滚动
-    int position;
+public class ImageManager extends Thread {
+    @Override
+    public void run() {
+        super.run();
+        int i = itemsList.size();
+        int I = 0;
+        if (itemsList.size() >= 1) {
 
-    public ImageManager(List<items> itemsList,Activity activity){
+            for (items temp = itemsList.get(--i); i >= 0; ) {
+                if (temp.isIfPic()) {
+                    Picture newPic = new Picture(i, loadBitmap(temp.getName()));
+                    picture[1][I++] = newPic;
+                    if (I == 10) {
+                        break;
+                    }
+                }
+                if (i >= 1) {
+                    temp = itemsList.get(--i);
+                } else {
+                    i = -1;
+                }
+            }
+            //nowUse = 1;
+        }
+    }
+
+    private Picture picture[][] = new Picture[3][10];
+    private List<items> itemsList;
+    Activity activity;
+    private int now = 1;
+    private int up = 0;
+    private int down = 2;
+    private int tag = -2;
+    private boolean upload = false;
+    private boolean download = false;
+    private boolean isUp = true;//判断当前listview是向上还是向下滚动
+    private int position = -1;
+
+    public ImageManager(List<items> itemsList, Activity activity) {
         this.itemsList = itemsList;
         this.activity = activity;
         picture[0] = new Picture[10];
@@ -35,41 +60,28 @@ public class ImageManager {
         picture[1] = new Picture[10];
         //new缓存空间
         //TODO 加载第一批次图片,从后往前加载,tag越小越后
-        int i = itemsList.size();
-        int I = 0;
-        if(itemsList.size()>=1){
-
-            for(items temp = itemsList.get(--i);i>=0;) {
-                if(temp.isIfPic()){
-                    Picture newPic = new Picture(i, loadBitmap(temp.getName()));
-                    picture[1][I++] = newPic;
-                    if(I==10){
-                        break;
-                    }
-                }
-                if(i>=1){
-                    temp = itemsList.get(--i);
-                }else{
-                    i=-1;
-                }
-            }
-            //nowUse = 1;
-        }
+        this.start();
     }
 
-    public Bitmap getImageByposition(int position){
-        if(tag == -2){
+    public Bitmap getImageByposition(int position) {
+        if(tag>=0&&tag<10&&picture[now][tag]!=null&&picture[now][tag].getPosition() == position){
+            return picture[now][tag].getImage();
+        }
+        if(tag == -1){
+            tag = 0;
+        }
+        if (tag == -2) {
             //第一次读图
             tag = 0;
             isUp = true;
-        }else if(isUp){
+        } else if (isUp) {
             tag++;
-        }else{
+        } else {
             tag--;
         }//应该得到的图片位置
-        if(tag <= -1){
+        if (tag <= -1) {
             //向下翻页
-            if(download){
+            if (download) {
                 tag = 9;
                 upload = true;
                 int temp;
@@ -79,15 +91,14 @@ public class ImageManager {
                 down = temp;
                 download = false;
 
-            }else{
+            } else {
                 //TODO load
-                loadImage(picture[now][0].getPosition()+1,false,down);
+                loadImage(picture[now][0].getPosition() + 1, false, down);
                 return getImageByposition(position);
             }
-        }
-        else if(tag >=10){
+        } else if (tag >= 10) {
             //向上翻页
-            if(upload){
+            if (upload) {
                 tag = 0;
                 download = true;
                 int temp = down;
@@ -95,58 +106,71 @@ public class ImageManager {
                 now = up;
                 up = temp;
                 upload = false;
-            }else{
+            } else {
                 //TODO load
-                loadImage(picture[now][9].getPosition()-1,true,up);
+                loadImage(picture[now][9].getPosition() - 1, true, up);
                 return getImageByposition(position);
 
             }
         }
-        return picture[now][tag].getImage();//最后返回now tag位置图片
+        if (picture[now][tag] == null) {
+            return null;
+        } else {
+            //return picture[now][tag].getImage();
+            if (picture[now][tag].getPosition() != position) {
+                return null;
+            } else {
+                return picture[now][tag].getImage();
+            }
+            //return picture[now][tag].getPosition()==position?picture[now][tag].getImage():null;//最后返回now tag位置图片
+        }
 
     }
-    public void loadImage(int position,boolean isUp,int load){
+
+    private void loadImage(int position, boolean isUp, int load) {
         int tag;
         int i = position;
-        if(isUp){
+        if (isUp) {
             tag = 0;
-        }else{
+        } else {
             tag = 9;
         }
-        for(;i>=0&&i<=itemsList.size()-1;){
-            if(tag>9 || tag<0){
+        for (; i >= 0 && i <= itemsList.size() - 1; ) {
+            if (tag > 9 || tag < 0) {
                 break;
             }
-            if(itemsList.get(i).isIfPic()){
-                picture[load][tag] = new Picture(i,loadBitmap(itemsList.get(i).getName()));
-                if(isUp){
-                    tag ++;
-                }else{
-                    tag --;
+            if (itemsList.get(i).isIfPic()) {
+                picture[load][tag] = new Picture(i, loadBitmap(itemsList.get(i).getName()));
+                if (isUp) {
+                    tag++;
+                } else {
+                    tag--;
                 }
             }
-            if(!isUp){
+            if (!isUp) {
                 i++;
-            }else{
+            } else {
                 i--;
             }
-        }if(isUp){
+        }
+        if (isUp) {
             upload = true;
-        }else{
+        } else {
             download = true;
         }
     }
-    public File getFileByName(String name){
+
+    private File getFileByName(String name) {
         Environment.getExternalStorageState();
         File mediaStorageDir = null;
-        try{
+        try {
             mediaStorageDir = new File(
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"moms");
-        }catch(Exception e)
-        {
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "moms");
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        if(!mediaStorageDir.exists()){
+        assert mediaStorageDir != null;
+        if (!mediaStorageDir.exists()) {
             return null;
         }
         File mediaFile;
@@ -154,51 +178,81 @@ public class ImageManager {
         return mediaFile;
     }
 
-    public Bitmap loadBitmap(String name){
+    private Bitmap loadBitmap(String name) {
+
+        try {
+            File imageFile = getFileByName(name);
+
+            BitmapFactory.Options factoryOptions = new BitmapFactory.Options();
+
+            factoryOptions.inJustDecodeBounds = true;
+            assert imageFile != null;
+            BitmapFactory.decodeFile(imageFile.getPath(), factoryOptions);
+
+            int imageWidth = factoryOptions.outWidth;
+            int imageHeight = factoryOptions.outHeight;
+            //获取屏幕大小
+            Resources resources = activity.getResources();
+            DisplayMetrics dm = resources.getDisplayMetrics();
+            float density1 = dm.density;
+            int width3 = dm.widthPixels - (int) (26 * density1);
+            //int height3 = dm.heightPixels;
 
 
-        File imageFile = getFileByName(name);
+            // Determine how much to scale down the image
+            int scaleFactor = imageWidth / width3;
 
-        BitmapFactory.Options factoryOptions = new BitmapFactory.Options();
+            factoryOptions.outWidth = width3;
+            factoryOptions.outHeight = imageHeight * width3 / imageWidth;
 
-        factoryOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(imageFile.getPath(), factoryOptions);
+            // Decode the image file into a Bitmap sized to fill the
+            // View
 
-        int imageWidth = factoryOptions.outWidth;
-        int imageHeight = factoryOptions.outHeight;
+            factoryOptions.inJustDecodeBounds = false;
+            factoryOptions.inSampleSize = scaleFactor;
+            factoryOptions.inPreferredConfig = null;
 
-        Resources resources = activity.getResources();
-        DisplayMetrics dm = resources.getDisplayMetrics();
-        float density1 = dm.density;
-        int width3 = dm.widthPixels-(int)(26*density1);
-        int height3 = dm.heightPixels;
+            Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getPath(),
+                    factoryOptions);
 
-
-        // Determine how much to scale down the image
-        int scaleFactor = imageWidth/width3;
-
-        // Decode the image file into a Bitmap sized to fill the
-        // View
-
-        factoryOptions.inJustDecodeBounds = false;
-        factoryOptions.inSampleSize = scaleFactor;
-        factoryOptions.inPurgeable = true;
-
-        Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getPath(),
-                factoryOptions);
-
-        //image.setImageBitmap(bitmap);
-
-        return bitmap;
+            Bitmap newBitmap = Bitmap.createScaledBitmap(bitmap, width3, imageHeight * width3 / imageWidth, true);
+            if (newBitmap.equals(bitmap)) {
+                return bitmap;
+            } else {
+                bitmap.recycle();
+                return newBitmap;
+            }
+        } catch (Exception e) {
+            return null;
+        }
     }
-    public void setPosition(int position){
-        if(position>this.position){
-            isUp = false;
+
+    public void setPosition(int position) {
+        if (this.position != -1) {
+            if (position > this.position) {
+                if (isUp) {
+                    isUp = false;
+                    for (; tag >= 0 && tag < 9; tag--) {
+                        if (picture[now][tag] == null || picture[now][tag].getPosition() >= position) {
+                            tag++;
+                            break;
+                        }
+                    }
+                }
+            } else {
+                if (!isUp) {
+                    isUp = true;
+                    for (; tag <= 9 && tag > 0; tag++) {
+                        if (picture[now][tag] == null || picture[now][tag].getPosition() <= position) {
+                            tag--;
+                            break;
+                        }
+                    }
+                }
+            }
         }
-        else{
-            isUp = true;
-        }
+
         this.position = position;
+        //实时更新position，创建主动函数加载。
     }
-    //实时更新position，创建主动函数加载。
 }

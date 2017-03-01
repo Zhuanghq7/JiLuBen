@@ -13,20 +13,21 @@
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp">
 
-        <LinearLayout
+        <RelativeLayout
             android:orientation="vertical"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="3dp">
 
             <cn.zhuangh7.jiluben.activity.classes.cirImageView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/item_pic_pic"
-                android:scaleType="fitCenter"
-                android:background="@drawable/cancel" />
+                android:scaleType="centerCrop"
+                android:background="@drawable/cancel"
+                android:layout_centerInParent="true"/>
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

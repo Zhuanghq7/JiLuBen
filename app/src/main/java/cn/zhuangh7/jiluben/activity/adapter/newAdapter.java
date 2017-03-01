@@ -2,6 +2,7 @@ package cn.zhuangh7.jiluben.activity.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -85,7 +86,14 @@ public class newAdapter extends BaseAdapter {
                 //viewholder.imageView.setImageBitmap(activity.setImageByName(item.getName(),viewholder.imageView));
                 viewholder.imageView.setAdjustViewBounds(true);
                 //老方法用的这个   viewholder.imageView.setImageBitmap(activity.setImageByName(item.getName()));
-                viewholder.imageView.setImageBitmap(activity.imageManager.getImageByposition(position));
+                Bitmap tempbitmap = activity.imageManager.getImageByposition(position);
+                if(tempbitmap==null){
+                    viewholder.imageView.setImageResource(R.drawable.cancel);
+                }else{
+                    viewholder.imageView.setImageBitmap(tempbitmap);
+                }
+
+
                 convertView.setTag(viewholder);
             }else{
                 ViewHolder4Text viewholder = new ViewHolder4Text();
@@ -102,7 +110,12 @@ public class newAdapter extends BaseAdapter {
                 viewholder.editText.setText(item.getText());
                 viewholder.name.setText(item.getName());
                 //viewholder.imageView.setImageBitmap(activity.setImageByName(item.getName()));
-                viewholder.imageView.setImageBitmap(activity.imageManager.getImageByposition(position));
+                Bitmap tempbitmap = activity.imageManager.getImageByposition(position);
+                if(tempbitmap==null){
+                    viewholder.imageView.setImageResource(R.drawable.cancel);
+                }else{
+                    viewholder.imageView.setImageBitmap(tempbitmap);
+                }
                 convertView.setTag(viewholder);
                 return convertView;
 
