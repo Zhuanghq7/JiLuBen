@@ -88,7 +88,6 @@ public class ImageManager extends Thread {
     @Override
     public void run() {
         super.run();
-        //ifloading = true;
         showRefreshMsg();
         int i = itemsList.size();
         int I = 0;
@@ -120,12 +119,11 @@ public class ImageManager extends Thread {
             }
             //nowUse = 1;
         }
-        ifloading = false;
         endRefreshMsg();
         while (isrun) {
             if (load) {
                 ifloading = true;
-                Log.e("HUAWEI SB", "more load" + isUp4load);
+                Log.e("HUAWEI SB", "more load isup4load:" + isUp4load);
                 showRefreshMsg();
                 loadImage(position4load, isUp4load, load4load);
                 //TODO send refresh message
@@ -182,7 +180,7 @@ public class ImageManager extends Thread {
     }
 
     public Bitmap getImageByposition(int position) {
-        Log.e("HUAWEI SB", "" + isUp);
+        //Log.e("HUAWEI SB", "" + isUp);
         int tempI = 0;
         for (; tempI < 10; tempI++) {
             if (picture[now][tempI] != null && picture[now][tempI].getPosition() == position) {
@@ -217,39 +215,39 @@ public class ImageManager extends Thread {
         }
         if (ifloading) {
             refresh = true;
-            Log.e("HUAWEI SB", "null 4");
+            //Log.e("HUAWEI SB", "null 4");
             return null;
             //TODO 上下列表找寻完毕都没有，且正在加载，等待加载完成。
         }
         if (isUp) {
             if (picture[now][9] == null) {
                 refresh = true;
-                Log.e("HUAWEI SB", "null 2");
+                //Log.e("HUAWEI SB", "null 2");
                 return null;
                 //TODO 说明当前列表未满，却请求加载，说明image还未载入内存；
             } else {
-                Log.e("HUAWEI SB", "more load 1");
+                //Log.e("HUAWEI SB", "more load 1");
                 refresh = true;
                 moreload(picture[now][9].getPosition() - 1, true, up);
 
                 //return getImageByposition(position);
-                Log.e("HUAWEI SB", "null 3");
+                //Log.e("HUAWEI SB", "null 3");
 
                 return null;
             }//TODO 如果上滚动 且全列表都没有，则说明需要更多加载
         } else {
-            if (picture[now][0] == null) {
-                refresh = true;
-                Log.e("HUAWEI SB", "null 5");
-                return null;
-                //TODO 说明当前列表未满，却请求加载，说明image还未载入内存；
-            } else {
-                refresh = true;
-                moreload(picture[now][0].getPosition() + 1, false, down);
+                if (picture[now][0] == null) {
+                    refresh = true;
+                    //Log.e("HUAWEI SB", "null 5");
+                    return null;
+                    //TODO 说明当前列表未满，却请求加载，说明image还未载入内存；
+                } else {
+                    refresh = true;
+                    moreload(picture[now][0].getPosition() + 1, false, down);
 
-                Log.e("HUAWEI SB", "null 6");
-                return null;
-            }
+                    //Log.e("HUAWEI SB", "null 6");
+                    return null;
+                }
         }
 
     }
@@ -375,10 +373,13 @@ public class ImageManager extends Thread {
             } else if (position > this.position) {
                 if (isUp) {
                     isUp = false;
+                    Log.e("HUAWEI SB", "isUp is false");
                 }
             } else {
                 if (!isUp) {
                     isUp = true;
+                    Log.e("HUAWEI SB", "isUp is true");
+
                 }
             }
         }
