@@ -8,9 +8,10 @@ import android.graphics.Bitmap;
 
 public class Picture {
     private int position;
+    private int id;
     private Bitmap image;
 
-    public Picture(int position,Bitmap image){
+    public Picture(int position,Bitmap image,int id){
         this.position = position;
         this.image = image;
     }
@@ -18,6 +19,9 @@ public class Picture {
         return position;
     }
 
+    public int getID(){
+        return id;
+    }
     public Bitmap getImage() {
         return image;
     }

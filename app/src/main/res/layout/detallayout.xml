@@ -23,15 +23,24 @@
             android:layout_height="56dp"
             android:background="@color/shops">
 
-            <ImageButton
-                android:layout_height="30dp"
-                android:id="@+id/imageButton"
-                android:background="@drawable/down"
-                android:layout_width="30dp"
-                android:layout_centerHorizontal="false"
-                android:layout_centerVertical="true"
+            <RelativeLayout
+                android:layout_width="44dp"
+                android:layout_height="44dp"
                 android:layout_alignParentEnd="true"
-                android:layout_marginRight="15dp" />
+                android:layout_marginRight="30dp"
+                android:layout_marginEnd="30dp"
+                android:id="@+id/more_button_l">
+
+                <ImageButton
+                    android:id="@+id/more_button"
+                    android:background="@drawable/down"
+                    android:layout_width="25dp"
+                    android:layout_alignParentEnd="false"
+                    android:layout_height="25dp"
+                    android:layout_centerInParent="false"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentBottom="true" />
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/shops_title"
@@ -53,7 +62,8 @@
             android:layout_height="61dp"
             android:background="@color/shops"
             android:weightSum="1"
-            android:visibility="gone">
+            android:visibility="gone"
+            android:id="@+id/more_data">
 
             <RelativeLayout
                 android:orientation="horizontal"
@@ -85,18 +95,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="36dp">
 
-                <RelativeLayout android:layout_height="38dp"
+                <RelativeLayout
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginRight="20dp"
-                    android:layout_width="45dp"
-                    android:id="@+id/detail_d_2">
+                    android:layout_marginRight="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:id="@+id/more_button_l2">
 
-                    <ImageView
-                        android:id="@+id/detail_d"
-                        android:layout_centerInParent="true"
-                        android:background="@drawable/down"
-                        android:layout_height="28dp"
-                        android:layout_width="24dp" />
+                    <ImageButton
+                        android:id="@+id/more_button2"
+                        android:background="@drawable/up"
+                        android:layout_width="25dp"
+                        android:layout_alignParentEnd="false"
+                        android:layout_height="25dp"
+                        android:layout_centerInParent="false"
+                        android:layout_centerHorizontal="true"
+                        android:layout_alignParentBottom="false"
+                        android:visibility="gone" />
                 </RelativeLayout>
 
                 <TextView

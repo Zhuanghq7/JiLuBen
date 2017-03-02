@@ -1,21 +1,22 @@
 package cn.zhuangh7.jiluben.activity.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import java.util.List;
 
 import cn.zhuangh7.jiluben.R;
 import cn.zhuangh7.jiluben.activity.classes.items;
+import cn.zhuangh7.jiluben.activity.dialog.editTextDialog;
 import cn.zhuangh7.jiluben.activity.needsActivity;
 
 /**
@@ -29,8 +30,10 @@ public class newAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private List<items> mlist;
     private needsActivity activity;
+    private Context context;
 
     public newAdapter(Context context,List<items> list,needsActivity activity){
+        this.context = context;
         mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.mlist = list;
         this.activity = activity;
@@ -68,7 +71,7 @@ public class newAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        items item = mlist.get(position);
+        final items item = mlist.get(position);
         activity.imageManager.setPosition(position);
         //得到item
         if(convertView==null){

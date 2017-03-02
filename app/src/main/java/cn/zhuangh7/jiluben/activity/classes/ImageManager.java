@@ -42,6 +42,33 @@ public class ImageManager extends Thread {
     private boolean isUp4load;
     private int load4load;
 
+    public void reLoadPosition(int position) {
+        for (int i = 0; i < 10; i++) {
+            if (picture[now][i] != null) {
+                if (picture[now][i].getPosition() == position) {
+                    picture[now][i] = null;
+                } else if (picture[now][i].getPosition() > position) {
+                    picture[now][i].setPosition(picture[now][i].getPosition() - 1);
+                }
+            }
+            if (upload && picture[up][i] != null) {
+                if (picture[up][i].getPosition() == position) {
+                    picture[up][i] = null;
+                } else if (picture[up][i].getPosition() > position) {
+                    picture[up][i].setPosition(picture[up][i].getPosition() - 1);
+                }
+            }
+            if (download && picture[down][i] != null) {
+                if (picture[down][i].getPosition() == position) {
+                    picture[down][i] = null;
+                } else if (picture[down][i].getPosition() > position) {
+                    picture[down][i].setPosition(picture[down][i].getPosition() - 1);
+                }
+            }
+        }
+
+    }
+
     private void showRefreshMsg() {
         Message msg = new Message();
         Bundle b = new Bundle();
@@ -61,7 +88,7 @@ public class ImageManager extends Thread {
     @Override
     public void run() {
         super.run();
-        ifloading = true;
+        //ifloading = true;
         showRefreshMsg();
         int i = itemsList.size();
         int I = 0;
@@ -69,7 +96,7 @@ public class ImageManager extends Thread {
 
             for (items temp = itemsList.get(--i); i >= 0; ) {
                 if (temp.isIfPic()) {
-                    Picture newPic = new Picture(i, loadBitmap(temp.getName()));
+                    Picture newPic = new Picture(i, loadBitmap(temp.getName()), temp.getId());
                     picture[1][I++] = newPic;
 
                     //TODO send refresh message
@@ -188,10 +215,10 @@ public class ImageManager extends Thread {
                 return picture[now][tempI].getImage();
             }
         }
-        if(ifloading){
-                refresh = true;
-                Log.e("HUAWEI SB", "null 4");
-                return null;
+        if (ifloading) {
+            refresh = true;
+            Log.e("HUAWEI SB", "null 4");
+            return null;
             //TODO 上下列表找寻完毕都没有，且正在加载，等待加载完成。
         }
         if (isUp) {
@@ -232,9 +259,9 @@ public class ImageManager extends Thread {
             position4load = position;
             isUp4load = isUp;
             load4load = load;
-            if(isUp){
+            if (isUp) {
                 goUp();
-            }else{
+            } else {
                 goDown();
             }
             this.load = true;
@@ -254,7 +281,7 @@ public class ImageManager extends Thread {
                 break;
             }
             if (itemsList.get(i).isIfPic()) {
-                picture[load][tag] = new Picture(i, loadBitmap(itemsList.get(i).getName()));
+                picture[load][tag] = new Picture(i, loadBitmap(itemsList.get(i).getName()), itemsList.get(i).getId());
                 if (isUp) {
                     tag++;
                 } else {
@@ -344,7 +371,7 @@ public class ImageManager extends Thread {
     public void setPosition(int position) {
         if (this.position != -1) {
             if (position == this.position) {
-
+                //donothing
             } else if (position > this.position) {
                 if (isUp) {
                     isUp = false;
@@ -359,7 +386,7 @@ public class ImageManager extends Thread {
         //实时更新position，创建主动函数加载。
     }
 
-    class MyHandle extends Handler {
+    private class MyHandle extends Handler {
 
         @Override
         public void handleMessage(Message msg) {

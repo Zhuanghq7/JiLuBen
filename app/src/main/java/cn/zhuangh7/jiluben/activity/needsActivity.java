@@ -7,11 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -19,26 +14,26 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.text.util.Linkify;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.view.animation.RotateAnimation;
+import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.baoyz.swipemenulistview.SwipeMenu;
-import com.baoyz.swipemenulistview.SwipeMenuCreator;
-import com.baoyz.swipemenulistview.SwipeMenuItem;
-import com.baoyz.swipemenulistview.SwipeMenuListView;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -56,6 +51,7 @@ import cn.zhuangh7.jiluben.activity.classes.dataBase;
 import cn.zhuangh7.jiluben.activity.classes.items;
 import cn.zhuangh7.jiluben.activity.classes.mainItem;
 import cn.zhuangh7.jiluben.activity.classes.needsItem;
+import cn.zhuangh7.jiluben.activity.dialog.editTextDialog;
 
 
 /**
@@ -73,8 +69,8 @@ public class needsActivity extends BaseActivity {
     public newAdapter MAdapter;
     needsItem[] goodss;
     items[] itemss;
-    dataBase mdb;//数据库
-    mainItem shop;
+    public dataBase mdb;//数据库
+    public mainItem shop;
     TextView name;
     TextView pos;
     TextView tel;
@@ -83,6 +79,12 @@ public class needsActivity extends BaseActivity {
     String newPicName;
     ImageView refresh;
     boolean createPicSuccess = false;
+    ImageButton morebutton;
+    LinearLayout moredata;
+    boolean isMoreData = false;
+    RelativeLayout morebuttonl;
+    RelativeLayout morebuttonl2;
+    ImageButton morebutton2;
 
 
     @Override
@@ -92,8 +94,19 @@ public class needsActivity extends BaseActivity {
         verifyCameraPermissions(this);
         //动态获取权限
         verifyStoragePermissions(this);
-    }
 
+    }
+    private void refreshlistview(){
+        mListView.setTranscriptMode(ListView.TRANSCRIPT_MODE_NORMAL);
+        int x = mListView.getScrollX();
+        int y = mListView.getScrollY();
+        MAdapter.notifyDataSetChanged();
+        mListView.scrollTo(x, y);//刷新列表
+    }
+    private void refreshlist(){
+        inititems();
+        refreshlistview();
+    }
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         Log.d(LOG_TAG, "1");
@@ -102,7 +115,7 @@ public class needsActivity extends BaseActivity {
         mListView = (ListView) findViewById(R.id.needs_listview);
         refresh = (ImageView) findViewById(R.id.detail_refresh);
         mdb = new dataBase(getApplicationContext());
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         int ID = intent.getExtras().getInt("ID");
         shop = mdb.getShopbyID(ID);
         name = (TextView) findViewById(R.id.shops_title);
@@ -112,37 +125,182 @@ public class needsActivity extends BaseActivity {
         pos.setText(shop.getPosition());
         tel.setText(shop.getTel());
         Linkify.addLinks(tel, Linkify.PHONE_NUMBERS);
-        click_d = (RelativeLayout) findViewById(R.id.detail_d_2);
-        click = (ImageView) findViewById(R.id.detail_d);
-
-        click_d.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "onClick_d", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        click.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "onClick_d_2", Toast.LENGTH_SHORT).show();
-            }
-        });
 
         //initgoods();
         inititems();//TODO listview 数据初始化
         imageManager = new ImageManager(itemses, this);//TODO 图片助手初始化
         MAdapter = new newAdapter(getApplicationContext(), itemses, this);
         mListView.setAdapter(MAdapter);
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                final items itemTemp = itemses.get(position);
+                final editTextDialog dialog = new editTextDialog(needsActivity.this, itemTemp);
+                dialog.setOnDeleteOnclickListener(new editTextDialog.onDeleteOnclickListener() {
+                    @Override
+                    public void onDeleteClick() {
+                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(needsActivity.this);
+                        dialogBuilder.setTitle("警告");
+                        dialogBuilder.setMessage("确认要删除这一条目吗？");
+                        dialogBuilder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog1, int which) {
+                                mdb.deleteText(itemTemp.getName(), shop.getID());
+                                Toast.makeText(needsActivity.this, "删除成功", Toast.LENGTH_LONG).show();
+                                Log.e("HUAWEI SB", "delete item from shop");
+                                refreshlist();
+                                imageManager.reLoadPosition(position);//图片位置改变
+                                dialog.dismiss();
+                            }
+                        }).setNegativeButton("取消",null).show();
 
-        //mAdapter = new detailAdapter(getApplicationContext(), R.layout.itemlayout_needs,goods);
-        //TODO 设置adapter与creator
-
+                    }
+                });
+                dialog.setOnAcceptOnclickListener(new editTextDialog.onAcceptOnclickListener(){
+                    @Override
+                    public void onAcceptClick() {
+                        mdb.editText(itemTemp.getName(), shop.getID(), dialog.getMainText());
+                        Toast.makeText(needsActivity.this, "修改成功", Toast.LENGTH_SHORT).show();
+                        refreshlist();
+                        dialog.dismiss();
+                    }
+                });
+                dialog.setOnCancelOnclickListener(new editTextDialog.onCancelOnclickListener(){
+                    @Override
+                    public void onCancelClick() {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
+            }
+        });
         //TODO set listview
+        morebutton = (ImageButton) findViewById(R.id.more_button);
+        morebutton2 = (ImageButton) findViewById(R.id.more_button2);
+        morebuttonl2 = (RelativeLayout) findViewById(R.id.more_button_l2);
+        moredata = (LinearLayout) findViewById(R.id.more_data);
+        morebuttonl = (RelativeLayout) findViewById(R.id.more_button_l);
+        morebuttonl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!isMoreData) {
+                    moreDataShow();
+                }else{
+                    Animation ani = AnimationUtils.loadAnimation(needsActivity.this, R.anim.convert);
+                    ani.setFillAfter(true);
+                    morebutton.startAnimation(ani);
+                    moredata.setVisibility(View.GONE);
+                    isMoreData = false;
+                }
+            }
+        });
+        morebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!isMoreData) {
+                    moreDataShow();
+                }else{
+                    Animation ani = AnimationUtils.loadAnimation(needsActivity.this, R.anim.convert);
+                    ani.setFillAfter(true);
+                    morebutton.startAnimation(ani);
+                    moredata.setVisibility(View.GONE);
+                    isMoreData = false;
+                }
+            }
+        });
+        morebutton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!isMoreData) {
+                    moreDataShow();
+                }else{
+                    moreDataClose();
+                }
+            }
+        });
+        morebuttonl2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!isMoreData) {
+                    moreDataShow();
+                }else{
+                    moreDataClose();
+                }
+            }
+        });
+    }
+    public void moreDataClose(){
+        morebutton.setVisibility(View.INVISIBLE);
+        morebuttonl.setVisibility(View.VISIBLE);
+        Animation ani = AnimationUtils.loadAnimation(needsActivity.this, R.anim.convert);
+        ani.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
 
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                morebutton.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        morebutton.startAnimation(ani);
+        moredata.setVisibility(View.GONE);
+        isMoreData = false;
+    }
+    public void moreDataShow(){
+        morebutton.setVisibility(View.INVISIBLE);
+        RotateAnimation ani = new RotateAnimation(0, 180,Animation.RELATIVE_TO_SELF,0.5f,Animation.RELATIVE_TO_SELF,0.5f);
+        ani.setDuration(200);
+        morebutton.startAnimation(ani);//按钮旋转
+        ani.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                morebuttonl.setVisibility(View.GONE);
+                morebutton.setVisibility(View.GONE);//转一圈消失
+
+                moredata.setVisibility(View.INVISIBLE);//显示出来
+                moredata.setVisibility(View.VISIBLE);
+                Animation anii = AnimationUtils.loadAnimation(needsActivity.this, R.anim.convert);
+                morebutton2.setVisibility(View.INVISIBLE);
+                isMoreData = true;
+                anii.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        morebutton2.setVisibility(View.VISIBLE);
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+                morebutton2.startAnimation(anii);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
 
     }
-
     public void showRefresh(){
         Animation ani = AnimationUtils.loadAnimation(this, R.anim.refresh);
         refresh.setAnimation(ani);
@@ -199,6 +357,7 @@ public class needsActivity extends BaseActivity {
             public void onClick(DialogInterface dialog, int which) {
                 int id = mdb.newText(getName(), shop.getID(), editText.getText().toString());
                 if(id>=0){
+                    refreshlist();//刷新listview
                     Toast.makeText(needsActivity.this,"添加成功,id:"+id,Toast.LENGTH_SHORT).show();
                 }else{
                     Toast.makeText(needsActivity.this,"添加失败",Toast.LENGTH_SHORT).show();
@@ -369,19 +528,21 @@ public class needsActivity extends BaseActivity {
 //                    }
 
                 } else {
-
                     Log.d(LOG_TAG,"data IS null, file saved on target position.");
                     createPicSuccess = true;//文件创建成功
 
                     //最后，先将信息写入数据库
                     createPicSuccess = false;
                     int id = mdb.newPic(newPicName, shop.getID(), null);
+                    refreshlist();//
                     Toast.makeText(this, "录入数据库成功，id" + id,Toast.LENGTH_SHORT).show();
                 }
             }
         }
     }
 
-
+    static public String transDate(String date){
+        return date;
+    }
 
 }
