@@ -37,14 +37,32 @@ public class ImageManager extends Thread {
     private int position = -1;
     private boolean load = false;
     public boolean isrun = false;
+    private boolean ifloading = false;
     private int position4load;
     private boolean isUp4load;
     private int load4load;
 
+    private void showRefreshMsg() {
+        Message msg = new Message();
+        Bundle b = new Bundle();
+        b.putInt("fun", 2);
+        msg.setData(b);
+        myHandle.sendMessage(msg);
+    }
+
+    private void endRefreshMsg() {
+        Message msg = new Message();
+        Bundle b = new Bundle();
+        b.putInt("fun", 3);
+        msg.setData(b);
+        myHandle.sendMessage(msg);
+    }
+
     @Override
     public void run() {
         super.run();
-
+        ifloading = true;
+        showRefreshMsg();
         int i = itemsList.size();
         int I = 0;
         if (itemsList.size() >= 1) {
@@ -75,44 +93,28 @@ public class ImageManager extends Thread {
             }
             //nowUse = 1;
         }
+        ifloading = false;
+        endRefreshMsg();
         while (isrun) {
             if (load) {
-                /*Log.e("HUAWEI SB", "more load");
-                int tag;
-                int i2 = position4load;
-                if (isUp4load) {
-                    tag = 0;
-                } else {
-                    tag = 9;
-                }
-                for (; i2 >= 0 && i2 <= itemsList.size() - 1; ) {
-                    if (tag > 9 || tag < 0) {
-                        break;
-                    }
-                    if (itemsList.get(i2).isIfPic()) {
-                        picture[load4load][tag] = new Picture(i2, loadBitmap(itemsList.get(i2).getName()));
-                        if (isUp4load) {
-                            tag++;
-                        } else {
-                            tag--;
-                        }
-                    }
-                    if (!isUp4load) {
-                        i2++;
-                    } else {
-                        i2--;
-                    }
-                }
-                if (isUp4load) {
-                    upload = true;
-                } else {
-                    download = true;
-                }
-            }*/
-                Log.e("HUAWEI SB", "more load");
+                ifloading = true;
+                Log.e("HUAWEI SB", "more load" + isUp4load);
+                showRefreshMsg();
                 loadImage(position4load, isUp4load, load4load);
+                //TODO send refresh message
+                if (refresh) {
+                    refresh = false;
+                    Message msg = new Message();
+                    Bundle b = new Bundle();
+                    b.putInt("fun", 1);
+                    msg.setData(b);
+                    myHandle.sendMessage(msg);
+                }
+
+                endRefreshMsg();
                 Log.e("HUAWEI SB", "more load success");
                 load = false;//stop load
+                ifloading = false;
             }
         }
     }
@@ -130,13 +132,36 @@ public class ImageManager extends Thread {
         this.start();
     }
 
+    private void goUp() {
+        Log.e("HUAWEI SB", "exchange now to up");
+        download = true;
+        int temp = down;
+        down = now;
+        now = up;
+        up = temp;
+        upload = false;
+    }
+
+    private void goDown() {
+//找到了转移阵地
+        Log.e("HUAWEI SB", "exchange now to down");
+        upload = true;
+        int temp;
+        temp = up;
+        up = now;
+        now = down;
+        down = temp;
+        download = false;
+    }
+
     public Bitmap getImageByposition(int position) {
+        Log.e("HUAWEI SB", "" + isUp);
         int tempI = 0;
         for (; tempI < 10; tempI++) {
             if (picture[now][tempI] != null && picture[now][tempI].getPosition() == position) {
                 return picture[now][tempI].getImage();
             }
-        }
+        }//TODO 在目前列表中寻找
         if (isUp) {
             if (upload) {
                 boolean iffind = false;
@@ -147,30 +172,32 @@ public class ImageManager extends Thread {
                     }
                 }
                 if (iffind) {
-                    //数组交换
-                    download = true;
-                    int temp = down;
-                    down = now;
-                    now = up;
-                    up = temp;
-                    upload = false;
+                    goUp();
                     return picture[now][tempI].getImage();
                 } else {
+                    refresh = true;
+                    Log.e("HUAWEI SB", "null 1");
                     return null;//预加载中都没找到就先返回一波
                 }
             } else {
                 if (picture[now][9] == null) {
                     refresh = true;
+                    Log.e("HUAWEI SB", "null 2");
                     return null;
                     //TODO 说明当前列表未满，却请求加载，说明image还未载入内存；
+                } else {
+                    Log.e("HUAWEI SB", "more load 1");
+                    refresh = true;
+                    moreload(picture[now][9].getPosition() - 1, true, up);
+
+                    //return getImageByposition(position);
+                    Log.e("HUAWEI SB", "null 3");
+
+                    return null;
                 }
-                moreload(picture[now][9].getPosition() - 1, true, up);
-                //return getImageByposition(position);
-                return null;
             }
         } else {
             if (download) {
-
                 boolean iffind = false;
                 for (tempI = 0; tempI < 10; tempI++) {
                     if (picture[down][tempI] != null && picture[down][tempI].getPosition() == position) {
@@ -179,38 +206,38 @@ public class ImageManager extends Thread {
                     }
                 }
                 if (iffind) {
-                    //找到了转移阵地
-                    upload = true;
-                    int temp;
-                    temp = up;
-                    up = now;
-                    now = down;
-                    down = temp;
-                    download = false;
+                    goDown();
                     return picture[now][tempI].getImage();
                 } else {
+                    refresh = true;
+                    Log.e("HUAWEI SB", "null 4");
                     return null;
                 }
             } else {
                 if (picture[now][0] == null) {
                     refresh = true;
+                    Log.e("HUAWEI SB", "null 5");
                     return null;
                     //TODU as front
+                } else {
+                    refresh = true;
+                    moreload(picture[now][0].getPosition() + 1, false, down);
+                    Log.e("HUAWEI SB", "null 6");
+                    return null;
                 }
-                moreload(picture[now][0].getPosition() + 1, false, down);
-                // return getImageByposition(position);
-                return null;
             }
         }
-       // return null;
     }
 
     private void moreload(int position, boolean isUp, int load) {
-        position4load = position;
-        isUp4load = isUp;
-        load4load = load;
-        this.load = true;
+        if (!ifloading) {
+            position4load = position;
+            isUp4load = isUp;
+            load4load = load;
+            this.load = true;
+        }
     }
+
     private void loadImage(int position, boolean isUp, int load) {
         int tag;
         int i = position;
@@ -313,7 +340,9 @@ public class ImageManager extends Thread {
 
     public void setPosition(int position) {
         if (this.position != -1) {
-            if (position > this.position) {
+            if (position == this.position) {
+
+            } else if (position > this.position) {
                 if (isUp) {
                     isUp = false;
                 }
@@ -342,6 +371,12 @@ public class ImageManager extends Thread {
                     activity.MAdapter.notifyDataSetChanged();
                     activity.mListView.scrollTo(x, y);
                     Log.e("111", "refresh");
+                    break;
+                case 2:
+                    activity.showRefresh();
+                    break;
+                case 3:
+                    activity.missRefresh();
                     break;
                 default:
                     break;

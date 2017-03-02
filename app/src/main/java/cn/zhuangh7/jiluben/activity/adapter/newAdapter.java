@@ -68,8 +68,6 @@ public class newAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Log.d("HUAWEI", "SB");
-        Log.e("HUAWEI", "SB");
         items item = mlist.get(position);
         activity.imageManager.setPosition(position);
         //得到item

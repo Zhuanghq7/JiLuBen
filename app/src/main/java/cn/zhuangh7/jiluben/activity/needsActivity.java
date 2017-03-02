@@ -24,6 +24,9 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.RotateAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -78,6 +81,7 @@ public class needsActivity extends BaseActivity {
     RelativeLayout click_d;
     ImageView click;
     String newPicName;
+    ImageView refresh;
     boolean createPicSuccess = false;
 
 
@@ -96,6 +100,7 @@ public class needsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detallayout);
         mListView = (ListView) findViewById(R.id.needs_listview);
+        refresh = (ImageView) findViewById(R.id.detail_refresh);
         mdb = new dataBase(getApplicationContext());
         Intent intent = getIntent();
         int ID = intent.getExtras().getInt("ID");
@@ -135,6 +140,18 @@ public class needsActivity extends BaseActivity {
 
         //TODO set listview
 
+
+    }
+
+    public void showRefresh(){
+        Animation ani = AnimationUtils.loadAnimation(this, R.anim.refresh);
+        refresh.setAnimation(ani);
+        refresh.setVisibility(View.VISIBLE);
+
+    }
+    public void missRefresh(){
+        refresh.setAnimation(null);
+        refresh.setVisibility(View.GONE);
 
     }
     public int dp2px(int dp) {

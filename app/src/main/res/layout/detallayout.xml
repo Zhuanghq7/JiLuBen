@@ -22,6 +22,17 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:background="@color/shops">
+
+            <ImageButton
+                android:layout_height="30dp"
+                android:id="@+id/imageButton"
+                android:background="@drawable/down"
+                android:layout_width="30dp"
+                android:layout_centerHorizontal="false"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="15dp" />
+
             <TextView
                 android:id="@+id/shops_title"
                 android:layout_width="wrap_content"
@@ -41,7 +52,8 @@
             android:layout_width="match_parent"
             android:layout_height="61dp"
             android:background="@color/shops"
-            android:weightSum="1">
+            android:weightSum="1"
+            android:visibility="gone">
 
             <RelativeLayout
                 android:orientation="horizontal"
@@ -113,6 +125,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <ListView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -122,6 +135,16 @@
                 android:stackFromBottom="true"
                 android:transcriptMode="alwaysScroll"
                 android:background="@color/background_gray" />
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:id="@+id/detail_refresh"
+                android:background="@drawable/huaji"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="50dp"
+                android:visibility="gone" />
 
             <RelativeLayout android:layout_height="60dp"
                 android:layout_width="60dp"
