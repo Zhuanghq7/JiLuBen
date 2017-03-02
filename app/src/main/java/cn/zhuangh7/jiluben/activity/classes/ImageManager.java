@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.widget.ListView;
 
 import java.io.File;
 import java.util.List;
@@ -23,6 +24,22 @@ import cn.zhuangh7.jiluben.activity.needsActivity;
 public class ImageManager extends Thread {
     MyHandle myHandle = new MyHandle();
     int fun = 1;
+    boolean refresh = false;
+    private Picture picture[][] = new Picture[3][10];
+    private List<items> itemsList;
+    needsActivity activity;
+    private int now = 1;
+    private int up = 0;
+    private int down = 2;
+    private boolean upload = false;
+    private boolean download = false;
+    private boolean isUp = true;//判断当前listview是向上还是向下滚动
+    private int position = -1;
+    private boolean load = false;
+    public boolean isrun = false;
+    private int position4load;
+    private boolean isUp4load;
+    private int load4load;
 
     @Override
     public void run() {
@@ -38,12 +55,14 @@ public class ImageManager extends Thread {
                     picture[1][I++] = newPic;
 
                     //TODO send refresh message
-                    Message msg = new Message();
-                    Bundle b = new Bundle();
-                    b.putInt("fun", 1);
-                    msg.setData(b);
-                    myHandle.sendMessage(msg);
-
+                    if (refresh) {
+                        refresh = false;
+                        Message msg = new Message();
+                        Bundle b = new Bundle();
+                        b.putInt("fun", 1);
+                        msg.setData(b);
+                        myHandle.sendMessage(msg);
+                    }
                     if (I == 10) {
                         break;
                     }
@@ -56,24 +75,48 @@ public class ImageManager extends Thread {
             }
             //nowUse = 1;
         }
-        //TODO send refresh message
-        Message msg = new Message();
-        Bundle b = new Bundle();
-        b.putInt("fun", 1);
-        msg.setData(b);
-        myHandle.sendMessage(msg);
+        while (isrun) {
+            if (load) {
+                /*Log.e("HUAWEI SB", "more load");
+                int tag;
+                int i2 = position4load;
+                if (isUp4load) {
+                    tag = 0;
+                } else {
+                    tag = 9;
+                }
+                for (; i2 >= 0 && i2 <= itemsList.size() - 1; ) {
+                    if (tag > 9 || tag < 0) {
+                        break;
+                    }
+                    if (itemsList.get(i2).isIfPic()) {
+                        picture[load4load][tag] = new Picture(i2, loadBitmap(itemsList.get(i2).getName()));
+                        if (isUp4load) {
+                            tag++;
+                        } else {
+                            tag--;
+                        }
+                    }
+                    if (!isUp4load) {
+                        i2++;
+                    } else {
+                        i2--;
+                    }
+                }
+                if (isUp4load) {
+                    upload = true;
+                } else {
+                    download = true;
+                }
+            }*/
+                Log.e("HUAWEI SB", "more load");
+                loadImage(position4load, isUp4load, load4load);
+                Log.e("HUAWEI SB", "more load success");
+                load = false;//stop load
+            }
+        }
     }
 
-    private Picture picture[][] = new Picture[3][10];
-    private List<items> itemsList;
-    needsActivity activity;
-    private int now = 1;
-    private int up = 0;
-    private int down = 2;
-    private boolean upload = false;
-    private boolean download = false;
-    private boolean isUp = true;//判断当前listview是向上还是向下滚动
-    private int position = -1;
 
     public ImageManager(List<items> itemsList, needsActivity activity) {
         this.itemsList = itemsList;
@@ -83,55 +126,91 @@ public class ImageManager extends Thread {
         picture[1] = new Picture[10];
         //new缓存空间
         //TODO 加载第一批次图片,从后往前加载,tag越小越后
+        isrun = true;
         this.start();
     }
 
     public Bitmap getImageByposition(int position) {
         int tempI = 0;
         for (; tempI < 10; tempI++) {
-
             if (picture[now][tempI] != null && picture[now][tempI].getPosition() == position) {
                 return picture[now][tempI].getImage();
             }
         }
         if (isUp) {
             if (upload) {
-                download = true;
-                int temp = down;
-                down = now;
-                now = up;
-                up = temp;
-                upload = false;
-                return getImageByposition(position);
+                boolean iffind = false;
+                for (tempI = 0; tempI < 10; tempI++) {
+                    if (picture[up][tempI] != null && picture[up][tempI].getPosition() == position) {
+                        iffind = true;
+                        break;
+                    }
+                }
+                if (iffind) {
+                    //数组交换
+                    download = true;
+                    int temp = down;
+                    down = now;
+                    now = up;
+                    up = temp;
+                    upload = false;
+                    return picture[now][tempI].getImage();
+                } else {
+                    return null;//预加载中都没找到就先返回一波
+                }
             } else {
                 if (picture[now][9] == null) {
+                    refresh = true;
                     return null;
                     //TODO 说明当前列表未满，却请求加载，说明image还未载入内存；
                 }
-                loadImage(picture[now][9].getPosition() - 1, true, up);
-                return getImageByposition(position);
+                moreload(picture[now][9].getPosition() - 1, true, up);
+                //return getImageByposition(position);
+                return null;
             }
         } else {
             if (download) {
-                upload = true;
-                int temp;
-                temp = up;
-                up = now;
-                now = down;
-                down = temp;
-                download = false;
-                return getImageByposition(position);
+
+                boolean iffind = false;
+                for (tempI = 0; tempI < 10; tempI++) {
+                    if (picture[down][tempI] != null && picture[down][tempI].getPosition() == position) {
+                        iffind = true;
+                        break;
+                    }
+                }
+                if (iffind) {
+                    //找到了转移阵地
+                    upload = true;
+                    int temp;
+                    temp = up;
+                    up = now;
+                    now = down;
+                    down = temp;
+                    download = false;
+                    return picture[now][tempI].getImage();
+                } else {
+                    return null;
+                }
             } else {
                 if (picture[now][0] == null) {
+                    refresh = true;
                     return null;
                     //TODU as front
                 }
-                loadImage(picture[now][0].getPosition() + 1, false, down);
-                return getImageByposition(position);
+                moreload(picture[now][0].getPosition() + 1, false, down);
+                // return getImageByposition(position);
+                return null;
             }
         }
+       // return null;
     }
 
+    private void moreload(int position, boolean isUp, int load) {
+        position4load = position;
+        isUp4load = isUp;
+        load4load = load;
+        this.load = true;
+    }
     private void loadImage(int position, boolean isUp, int load) {
         int tag;
         int i = position;
@@ -257,7 +336,11 @@ public class ImageManager extends Thread {
             int fun = b.getInt("fun");
             switch (fun) {
                 case 1:
+                    activity.mListView.setTranscriptMode(ListView.TRANSCRIPT_MODE_NORMAL);
+                    int x = activity.mListView.getScrollX();
+                    int y = activity.mListView.getScrollY();
                     activity.MAdapter.notifyDataSetChanged();
+                    activity.mListView.scrollTo(x, y);
                     Log.e("111", "refresh");
                     break;
                 default:
