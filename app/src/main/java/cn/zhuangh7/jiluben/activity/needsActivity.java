@@ -85,6 +85,7 @@ public class needsActivity extends BaseActivity {
     RelativeLayout morebuttonl;
     RelativeLayout morebuttonl2;
     ImageButton morebutton2;
+    static public String today[] = new String[3];
 
 
     @Override
@@ -96,21 +97,37 @@ public class needsActivity extends BaseActivity {
         verifyStoragePermissions(this);
 
     }
-    private void refreshlistview(){
+
+    private void refreshlistview() {
         mListView.setTranscriptMode(ListView.TRANSCRIPT_MODE_NORMAL);
         int x = mListView.getScrollX();
         int y = mListView.getScrollY();
         MAdapter.notifyDataSetChanged();
         mListView.scrollTo(x, y);//刷新列表
     }
-    private void refreshlist(){
+
+    private void refreshlist() {
         inititems();
         refreshlistview();
     }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        Log.d(LOG_TAG, "1");
         super.onCreate(savedInstanceState);
+        //init date
+        String timeStamp = new SimpleDateFormat("yyyy_MM_dd-HH_mm_ss").format(new Date());
+        int temptag = 0;
+        today[0] = "";
+        today[1] = "";
+        today[2] = "";
+        for(int i = 0;temptag<3&&i<timeStamp.length();i++){
+            if(timeStamp.charAt(i)!='_'&&timeStamp.charAt(i)!='-'){
+                today[temptag] += timeStamp.charAt(i);
+            }else{
+                temptag++;
+            }
+        }
+        Log.e("TODAY", "" + today[0] + " " + today[1] + " " + today[2]);
         setContentView(R.layout.detallayout);
         mListView = (ListView) findViewById(R.id.needs_listview);
         refresh = (ImageView) findViewById(R.id.detail_refresh);
@@ -152,11 +169,11 @@ public class needsActivity extends BaseActivity {
                                 imageManager.reLoadPosition(position);//图片位置改变
                                 dialog.dismiss();
                             }
-                        }).setNegativeButton("取消",null).show();
+                        }).setNegativeButton("取消", null).show();
 
                     }
                 });
-                dialog.setOnAcceptOnclickListener(new editTextDialog.onAcceptOnclickListener(){
+                dialog.setOnAcceptOnclickListener(new editTextDialog.onAcceptOnclickListener() {
                     @Override
                     public void onAcceptClick() {
                         mdb.editText(itemTemp.getName(), shop.getID(), dialog.getMainText());
@@ -165,7 +182,7 @@ public class needsActivity extends BaseActivity {
                         dialog.dismiss();
                     }
                 });
-                dialog.setOnCancelOnclickListener(new editTextDialog.onCancelOnclickListener(){
+                dialog.setOnCancelOnclickListener(new editTextDialog.onCancelOnclickListener() {
                     @Override
                     public void onCancelClick() {
                         dialog.dismiss();
@@ -183,9 +200,9 @@ public class needsActivity extends BaseActivity {
         morebuttonl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isMoreData) {
+                if (!isMoreData) {
                     moreDataShow();
-                }else{
+                } else {
                     Animation ani = AnimationUtils.loadAnimation(needsActivity.this, R.anim.convert);
                     ani.setFillAfter(true);
                     morebutton.startAnimation(ani);
@@ -197,9 +214,9 @@ public class needsActivity extends BaseActivity {
         morebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isMoreData) {
+                if (!isMoreData) {
                     moreDataShow();
-                }else{
+                } else {
                     Animation ani = AnimationUtils.loadAnimation(needsActivity.this, R.anim.convert);
                     ani.setFillAfter(true);
                     morebutton.startAnimation(ani);
@@ -211,9 +228,9 @@ public class needsActivity extends BaseActivity {
         morebutton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isMoreData) {
+                if (!isMoreData) {
                     moreDataShow();
-                }else{
+                } else {
                     moreDataClose();
                 }
             }
@@ -221,15 +238,16 @@ public class needsActivity extends BaseActivity {
         morebuttonl2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isMoreData) {
+                if (!isMoreData) {
                     moreDataShow();
-                }else{
+                } else {
                     moreDataClose();
                 }
             }
         });
     }
-    public void moreDataClose(){
+
+    public void moreDataClose() {
         morebutton.setVisibility(View.INVISIBLE);
         morebuttonl.setVisibility(View.VISIBLE);
         Animation ani = AnimationUtils.loadAnimation(needsActivity.this, R.anim.convert);
@@ -253,9 +271,10 @@ public class needsActivity extends BaseActivity {
         moredata.setVisibility(View.GONE);
         isMoreData = false;
     }
-    public void moreDataShow(){
+
+    public void moreDataShow() {
         morebutton.setVisibility(View.INVISIBLE);
-        RotateAnimation ani = new RotateAnimation(0, 180,Animation.RELATIVE_TO_SELF,0.5f,Animation.RELATIVE_TO_SELF,0.5f);
+        RotateAnimation ani = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         ani.setDuration(200);
         morebutton.startAnimation(ani);//按钮旋转
         ani.setAnimationListener(new Animation.AnimationListener() {
@@ -301,52 +320,57 @@ public class needsActivity extends BaseActivity {
         });
 
     }
-    public void showRefresh(){
+
+    public void showRefresh() {
         Animation ani = AnimationUtils.loadAnimation(this, R.anim.refresh);
         refresh.setAnimation(ani);
         refresh.setVisibility(View.VISIBLE);
 
     }
-    public void missRefresh(){
+
+    public void missRefresh() {
         refresh.setAnimation(null);
         refresh.setVisibility(View.GONE);
 
     }
+
     public int dp2px(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                 getResources().getDisplayMetrics());
     }
 
-    public void addNeeds(String good ,int num){
+    public void addNeeds(String good, int num) {
         mdb.addNeeds(shop.getID(), good, num);
         updateGoods();
     }
 
-    private void updateGoods(){
+    private void updateGoods() {
         initgoods();
         mAdapter.notifyDataSetChanged();
     }
 
-    private void initgoods(){
-        if(goods!=null){
+    private void initgoods() {
+        if (goods != null) {
             goods.clear();
         }
         goodss = mdb.readGoodsfromNeeds(shop.getID());
         Collections.addAll(goods, goodss);
     }
 
-    private void inititems(){
-        if(itemses!=null){
+    private void inititems() {
+        if (itemses != null) {
             itemses.clear();
         }
         itemss = mdb.readItem(shop.getID());
         Collections.addAll(itemses, itemss);
     }
+
     public void old_onAddDetail(View view) {
         addNeedsDialog dialog = new addNeedsDialog();
         dialog.show(getFragmentManager(), "NeedsDialog");
     }
-    public void onAddDetail_2(View view){
+
+    public void onAddDetail_2(View view) {
         //TODO 显示输入dialog
 
         final EditText editText = new EditText(this);
@@ -356,11 +380,11 @@ public class needsActivity extends BaseActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 int id = mdb.newText(getName(), shop.getID(), editText.getText().toString());
-                if(id>=0){
+                if (id >= 0) {
                     refreshlist();//刷新listview
-                    Toast.makeText(needsActivity.this,"添加成功,id:"+id,Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(needsActivity.this,"添加失败",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(needsActivity.this, "添加成功,id:" + id, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(needsActivity.this, "添加失败", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -375,7 +399,7 @@ public class needsActivity extends BaseActivity {
             }
         });
         tempDialog.show();
-        final AlertDialog a =tempDialog;
+        final AlertDialog a = tempDialog;
         inputDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -383,12 +407,13 @@ public class needsActivity extends BaseActivity {
             }
         });
     }
-    public void onAddDetail(View view){
+
+    public void onAddDetail(View view) {
         //TODO 开始拍照
         Log.d(LOG_TAG, "nothing to show");
         Uri fileUri;
         fileUri = getOutputMediaFileUri();
-        if(fileUri!=null){
+        if (fileUri != null) {
             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
             cameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
@@ -397,62 +422,62 @@ public class needsActivity extends BaseActivity {
         }
 
     }
+
     //返回一个Uri
-    private  Uri getOutputMediaFileUri(){
+    private Uri getOutputMediaFileUri() {
         Uri temp = null;
-        try{
+        try {
             temp = Uri.fromFile(getOutputMediaFile());
-        }catch(Exception e){
+        } catch (Exception e) {
             //do nothing;
         }
         return temp;
     }
 
-    private String getName(){
+    private String getName() {
         return new SimpleDateFormat("yyyy_MM_dd-HH_mm_ss").format(new Date());
     }
-    public File getFileByName(String name){
+
+    public File getFileByName(String name) {
         Environment.getExternalStorageState();
         File mediaStorageDir = null;
-        try{
+        try {
             mediaStorageDir = new File(
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"moms");
-            Log.d(LOG_TAG,"created mediaStorageDir sucessfully"+mediaStorageDir);
-        }catch(Exception e)
-        {
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "moms");
+            Log.d(LOG_TAG, "created mediaStorageDir sucessfully" + mediaStorageDir);
+        } catch (Exception e) {
             e.printStackTrace();
             Log.d(LOG_TAG, "Error in creating mediaStorageDir:" + mediaStorageDir);
         }
         assert mediaStorageDir != null;
-        if(!mediaStorageDir.exists()){
+        if (!mediaStorageDir.exists()) {
             return null;
         }
         File mediaFile;
         mediaFile = new File(mediaStorageDir.getPath() + File.separator + "IMG_" + name + ".jpg");
         return mediaFile;
     }
+
     //返回一个文件
-    private File getOutputMediaFile(){
+    private File getOutputMediaFile() {
 
         createPicSuccess = false;//在创建文件开始前
 
         Environment.getExternalStorageState();
         File mediaStorageDir = null;
-        try{
+        try {
             mediaStorageDir = new File(
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"moms");
-            Log.d(LOG_TAG,"created mediaStorageDir sucessfully"+mediaStorageDir);
-        }catch(Exception e)
-        {
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "moms");
+            Log.d(LOG_TAG, "created mediaStorageDir sucessfully" + mediaStorageDir);
+        } catch (Exception e) {
             e.printStackTrace();
             Log.d(LOG_TAG, "Error in creating mediaStorageDir:" + mediaStorageDir);
         }
         //如果目录不存在那么新建一个
         assert mediaStorageDir != null;
-        if(!mediaStorageDir.exists()){
-            if(!mediaStorageDir.mkdir())
-            {
-                Log.d(LOG_TAG,"failed to create directory, check if you have the WRITE_EXTERNAL_STORAGE permission");
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdir()) {
+                Log.d(LOG_TAG, "failed to create directory, check if you have the WRITE_EXTERNAL_STORAGE permission");
                 return null;
             }
         }
@@ -461,7 +486,7 @@ public class needsActivity extends BaseActivity {
         newPicName = timeStamp;//存储一下文件名
 
         File mediaFile;
-        mediaFile = new File(mediaStorageDir.getPath() + File.separator+ "IMG_" + timeStamp + ".jpg");
+        mediaFile = new File(mediaStorageDir.getPath() + File.separator + "IMG_" + timeStamp + ".jpg");
 
 
         return mediaFile;
@@ -471,20 +496,22 @@ public class needsActivity extends BaseActivity {
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE };
+            Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
     /**
      * Checks if the app has permission to write to device storage
      * If the app does not has permission then the user will be prompted to
      * grant permissions
+     *
      * @param activity
      */
     public static void verifyStoragePermissions(Activity activity) {
-    // Check if we have write permission
+        // Check if we have write permission
         int permission = ActivityCompat.checkSelfPermission(activity,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         if (permission != PackageManager.PERMISSION_GRANTED) {
-    // We don't have permission so prompt the user
+            // We don't have permission so prompt the user
             ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE,
                     REQUEST_EXTERNAL_STORAGE);
         }
@@ -502,7 +529,7 @@ public class needsActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d(LOG_TAG,"onActivityResult: requestCode: " + requestCode
+        Log.d(LOG_TAG, "onActivityResult: requestCode: " + requestCode
                 + ", resultCode: " + requestCode + ", data: " + data);
         if (requestCode == 100) {
             Log.d(LOG_TAG, "CAPTURE_IMAGE");
@@ -528,21 +555,37 @@ public class needsActivity extends BaseActivity {
 //                    }
 
                 } else {
-                    Log.d(LOG_TAG,"data IS null, file saved on target position.");
+                    Log.d(LOG_TAG, "data IS null, file saved on target position.");
                     createPicSuccess = true;//文件创建成功
 
                     //最后，先将信息写入数据库
                     createPicSuccess = false;
                     int id = mdb.newPic(newPicName, shop.getID(), null);
                     refreshlist();//
-                    Toast.makeText(this, "录入数据库成功，id" + id,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "录入数据库成功，id" + id, Toast.LENGTH_SHORT).show();
                 }
             }
         }
     }
 
-    static public String transDate(String date){
-        return date;
+    static public String transDate(String date) {
+        String[] sit = new String[6];
+        for(int i = 0;i<6;i++){
+            sit[i] = "";
+        }
+        int tag = 0;
+        for (int i = 0; i < date.length(); i++) {
+            if(date.charAt(i)=='_'||date.charAt(i)=='-'){
+                tag++;
+                continue;
+            }
+            sit[tag] += date.charAt(i);
+        }
+        if(sit[0].equals(today[0])&&sit[1].equals(today[1])&&sit[2].equals(today[2])){
+            return "今天  "+sit[3]+"点"+sit[4]+"分"+sit[5]+"秒 ";
+
+        }
+        return sit[0]+"年"+sit[1]+"月"+sit[2]+"日  "+sit[3]+"点"+sit[4]+"分"+sit[5]+"秒 ";
     }
 
 }

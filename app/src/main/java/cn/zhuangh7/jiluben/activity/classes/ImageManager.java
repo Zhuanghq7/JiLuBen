@@ -367,23 +367,24 @@ public class ImageManager extends Thread {
     }
 
     public void setPosition(int position) {
-        if (this.position != -1) {
+        if (position != -1) {
             if (position == this.position) {
                 //donothing
             } else if (position > this.position) {
                 if (isUp) {
                     isUp = false;
-                    Log.e("HUAWEI SB", "isUp is false");
+                    Log.e("HUAWEI SB", "isUp is false" +this.position+"  "+position);
                 }
             } else {
                 if (!isUp) {
                     isUp = true;
-                    Log.e("HUAWEI SB", "isUp is true");
+                    Log.e("HUAWEI SB", "isUp is true"+this.position+"  "+position);
 
                 }
             }
+            Log.e("HUAWEI SB", "set new position " + position);
+            this.position = position;//TODO 我曹这为什么？
         }
-        this.position = position;
         //实时更新position，创建主动函数加载。
     }
 

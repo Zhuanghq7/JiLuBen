@@ -80,13 +80,10 @@ public class newAdapter extends BaseAdapter {
                 convertView = mInflater.inflate(R.layout.itemlayout_pictures, null);
                 viewholder.name = (TextView) convertView.findViewById(R.id.item_pic_text_name);
                 viewholder.editText = (TextView) convertView.findViewById(R.id.item_pic_text_text);
-                //viewholder.name.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
                 viewholder.imageView = (ImageView) convertView.findViewById(R.id.item_pic_pic);
-                viewholder.name.setText(item.getName());
+                viewholder.name.setText(needsActivity.transDate(item.getName()));
                 viewholder.editText.setText(item.getText());
-                //viewholder.imageView.setImageBitmap(activity.setImageByName(item.getName(),viewholder.imageView));
                 viewholder.imageView.setAdjustViewBounds(true);
-                //老方法用的这个   viewholder.imageView.setImageBitmap(activity.setImageByName(item.getName()));
                 Bitmap tempbitmap = activity.imageManager.getImageByposition(position);
                 if(tempbitmap==null){
                     viewholder.imageView.setImageResource(R.drawable.cancel);
@@ -99,7 +96,7 @@ public class newAdapter extends BaseAdapter {
                 convertView = mInflater.inflate(R.layout.itemlayout_text, null);
                 viewholder.name = (TextView) convertView.findViewById(R.id.item_text_name);
                 viewholder.editText = (TextView) convertView.findViewById(R.id.item_text_text);
-                viewholder.name.setText(item.getName());
+                viewholder.name.setText(needsActivity.transDate(item.getName()));
                 viewholder.editText.setText(item.getText());
                 convertView.setTag(viewholder);
             }
@@ -107,7 +104,7 @@ public class newAdapter extends BaseAdapter {
             if (item.isIfPic()) {
                 ViewHolder4Pic viewholder = (ViewHolder4Pic) convertView.getTag();
                 viewholder.editText.setText(item.getText());
-                viewholder.name.setText(item.getName());
+                viewholder.name.setText(needsActivity.transDate(item.getName()));
                 //viewholder.imageView.setImageBitmap(activity.setImageByName(item.getName()));
                 Bitmap tempbitmap = activity.imageManager.getImageByposition(position);
                 if(tempbitmap==null){
@@ -120,7 +117,7 @@ public class newAdapter extends BaseAdapter {
 
             }else{
                 ViewHolder4Text viewholder = (ViewHolder4Text) convertView.getTag();
-                viewholder.name.setText(item.getName());
+                viewholder.name.setText(needsActivity.transDate(item.getName()));
                 viewholder.editText.setText(item.getText());
                 convertView.setTag(viewholder);
                 return convertView;
