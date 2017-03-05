@@ -1,5 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="cn.zhuangh7.jiluben">
+    package="cn.zhuangh7.jiluben"
+    android:versionName="1.1"
+    android:versionCode="1">
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />

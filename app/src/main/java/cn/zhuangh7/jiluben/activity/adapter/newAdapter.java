@@ -87,11 +87,13 @@ public class newAdapter extends BaseAdapter {
                 viewholder.name = (TextView) convertView.findViewById(R.id.item_pic_text_name);
                 viewholder.editText = (TextView) convertView.findViewById(R.id.item_pic_text_text);
                 viewholder.imageView = (ImageView) convertView.findViewById(R.id.item_pic_pic);
-                viewholder.button_text = (LinearLayout) convertView.findViewById(R.id.item_picture_text_edit);
+                //viewholder.button_text = (LinearLayout) convertView.findViewById(R.id.item_picture_text_edit);
+                viewholder.day = (TextView) convertView.findViewById(R.id.textview_day1);
                 //TODO get views
                 viewholder.name.setText(needsActivity.transDate(item.getName()));
                 viewholder.editText.setText(item.getText());
                 viewholder.imageView.setAdjustViewBounds(true);
+                viewholder.day.setText(item.getDay()+"日");
                 final Bitmap tempbitmap = activity.imageManager.getImageByposition(position);
                 if(tempbitmap==null){
                     viewholder.imageView.setImageResource(R.drawable.cancel);
@@ -104,52 +106,7 @@ public class newAdapter extends BaseAdapter {
                         }
                     });
                 }
-                //先不给edittext设置点击事件，因为imageview不捕获焦点所以可以直接用itemonclick事件（反正都一样→_→）
-                /*viewholder.button_text.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                       // final items itemTemp = itemses.get(position);
-                        final items itemTemp = item;
-                        final int pos = position;
-                        final editTextDialog dialog = new editTextDialog(context, itemTemp);
-                        dialog.setOnDeleteOnclickListener(new editTextDialog.onDeleteOnclickListener() {
-                            @Override
-                            public void onDeleteClick() {
-                                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
-                                dialogBuilder.setTitle("警告");
-                                dialogBuilder.setMessage("确认要删除这一条目吗？");
-                                dialogBuilder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog1, int which) {
-                                        activity.mdb.deleteText(itemTemp.getName(), activity.shop.getID());
-                                        Toast.makeText(context, "删除成功", Toast.LENGTH_LONG).show();
-                                        Log.e("HUAWEI SB", "delete item from shop");
-                                        activity.refreshlist();
-                                        activity.imageManager.reLoadPosition(pos);//图片位置改变
-                                        dialog.dismiss();
-                                    }
-                                }).setNegativeButton("取消", null).show();
 
-                            }
-                        });
-                        dialog.setOnAcceptOnclickListener(new editTextDialog.onAcceptOnclickListener() {
-                            @Override
-                            public void onAcceptClick() {
-                                activity.mdb.editText(itemTemp.getName(), activity.shop.getID(), dialog.getMainText());
-                                Toast.makeText(context, "修改成功", Toast.LENGTH_SHORT).show();
-                                activity.refreshlist();
-                                dialog.dismiss();
-                            }
-                        });
-                        dialog.setOnCancelOnclickListener(new editTextDialog.onCancelOnclickListener() {
-                            @Override
-                            public void onCancelClick() {
-                                dialog.dismiss();
-                            }
-                        });
-                        dialog.show();
-                    }
-                });*/
                 //TODO views' data set
                 convertView.setTag(viewholder);
             }else{//not a picture item
@@ -157,8 +114,11 @@ public class newAdapter extends BaseAdapter {
                 convertView = mInflater.inflate(R.layout.itemlayout_text, null);
                 viewholder.name = (TextView) convertView.findViewById(R.id.item_text_name);
                 viewholder.editText = (TextView) convertView.findViewById(R.id.item_text_text);
+                viewholder.day = (TextView) convertView.findViewById(R.id.textview_day2);
+                //get view
                 viewholder.name.setText(needsActivity.transDate(item.getName()));
                 viewholder.editText.setText(item.getText());
+                viewholder.day.setText(item.getDay()+"日");
                 convertView.setTag(viewholder);
             }
         }else{//convertView !=null
@@ -166,6 +126,7 @@ public class newAdapter extends BaseAdapter {
                 ViewHolder4Pic viewholder = (ViewHolder4Pic) convertView.getTag();
                 viewholder.editText.setText(item.getText());
                 viewholder.name.setText(needsActivity.transDate(item.getName()));
+                viewholder.day.setText(item.getDay()+"日");
                 //viewholder.imageView.setImageBitmap(activity.setImageByName(item.getName()));
                 final Bitmap tempbitmap = activity.imageManager.getImageByposition(position);
                 if(tempbitmap==null){
@@ -186,6 +147,7 @@ public class newAdapter extends BaseAdapter {
                 ViewHolder4Text viewholder = (ViewHolder4Text) convertView.getTag();
                 viewholder.name.setText(needsActivity.transDate(item.getName()));
                 viewholder.editText.setText(item.getText());
+                viewholder.day.setText(item.getDay()+"日");
                 convertView.setTag(viewholder);
                 return convertView;
             }
@@ -196,12 +158,13 @@ public class newAdapter extends BaseAdapter {
     private class ViewHolder4Text{
         private TextView editText;
         private TextView name;
+        private TextView day;
     }
     private class ViewHolder4Pic{
         private TextView editText;
         private TextView name;
         private ImageView imageView;
-        private LinearLayout button_text;
+        private TextView day;
     }
 
 

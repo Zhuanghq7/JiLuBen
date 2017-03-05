@@ -12,11 +12,11 @@
         <com.polites.android.GestureImageView
             android:id="@+id/show_pic_image"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             gesture-image:strict="false"
             gesture-image:min-scale="0.1"
             gesture-image:max-scale="10.0"
-            />
+            android:layout_centerVertical="true" />
 
         <Button
             android:text="退出"

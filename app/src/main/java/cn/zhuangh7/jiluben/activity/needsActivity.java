@@ -273,9 +273,9 @@ public class needsActivity extends BaseActivity {
         tempdate[5] = "";
         for(int i=0;i<date.length()&&tag<6;i++) {
             if(date.charAt(i)!='_'&&date.charAt(i)!='-'){
-                tag++;
-            }else{
                 tempdate[tag] += date.charAt(i);
+            }else{
+                tag++;
             }
         }
         return tempdate;

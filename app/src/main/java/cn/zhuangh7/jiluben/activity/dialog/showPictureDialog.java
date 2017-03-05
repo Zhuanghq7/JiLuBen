@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -35,6 +37,13 @@ public class showPictureDialog extends Dialog {
         super(context, R.style.MyDialog);
         this.item = item;
         this.bitmap = bitmap;
+        Window win = getWindow();
+        assert win != null;
+        win.getDecorView().setPadding(0, 0, 0, 0);
+        WindowManager.LayoutParams lp = win.getAttributes();
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+        win.setAttributes(lp);
     }
 
     @Override

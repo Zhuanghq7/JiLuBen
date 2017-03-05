@@ -24,7 +24,7 @@ public class items {
     boolean ifUpCloud;
     int id;
 
-    public items(int id,String name,int shopId,String text,boolean ifUpCloud,boolean ifPic){
+    public items(int id, String name, int shopId, String text, boolean ifUpCloud, boolean ifPic) {
         this.name = name;
         this.shopId = shopId;
         this.ifPic = ifPic;
@@ -38,9 +38,14 @@ public class items {
         return name;
     }
 
+    public String getDay() {
+        return date[2];
+    }
+
     public int getShopId() {
         return shopId;
     }
+
     public String getText() {
         return text;
     }
