@@ -16,4 +16,7 @@
     <color name="whitegray">#eeeeee</color>
     <color name="deepblue">#000c1a</color>
     <color name="verydeepegray">#2b2b2b</color>
+    <color name="newcolor">#72d472</color>
+    <color name="black_transparent">#cc000000</color>
+    <color name="white_transparent">#aeffffff</color>
 </resources>

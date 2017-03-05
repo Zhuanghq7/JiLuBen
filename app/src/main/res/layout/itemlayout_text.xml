@@ -1,26 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_width="60dp">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
+            android:background="@color/shops"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="40dp">
+
+            <TextView
+                android:text="12日"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView13"
+                android:textColor="@color/white" />
+        </RelativeLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:background="@color/background_gray"
+            android:layout_width="10dp"
+            android:layout_height="10dp"></LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_height="match_parent"
+        android:layout_width="3dp"
+        android:background="@color/shops"></LinearLayout>
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="6dp"
-        android:layout_marginTop="6dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:background="@drawable/grayshape">
+        android:background="@color/white"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="15dp">
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/shape"
-            android:padding="15dp"
-            android:layout_margin="5dp"
-            android:id="@+id/item_text">
+            android:id="@+id/item_text"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="40dp"
+            android:paddingBottom="20dp"
+            android:minHeight="60dp">
 
             <TextView
                 android:text="P_name"
@@ -29,7 +69,8 @@
                 android:id="@+id/item_text_name"
                 android:layout_marginBottom="5dp"
                 android:textColor="@color/deepblue"
-                android:textStyle="normal|bold" />
+                android:textStyle="normal|bold"
+                android:visibility="gone" />
 
             <TextView
                 android:text="TextView"

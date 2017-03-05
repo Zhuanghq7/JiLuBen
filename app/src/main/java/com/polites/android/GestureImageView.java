@@ -376,7 +376,7 @@ public class GestureImageView extends ImageView  {
 	}
 
 	protected void initImage() {
-		if(this.drawable != null) {
+		/*if(this.drawable != null) {
 			this.drawable.setAlpha(alpha);
 			this.drawable.setFilterBitmap(true);
 			if(colorFilter != null) {
@@ -387,6 +387,26 @@ public class GestureImageView extends ImageView  {
 		if(!layout) {
 			requestLayout();
 			redraw();
+		}*/
+		//TODO change to fix reSetImageBitmap bug
+		if(this.drawable != null) {
+			this.drawable.setAlpha(alpha);
+			this.drawable.setFilterBitmap(true);
+			if(colorFilter != null) {
+				this.drawable.setColorFilter(colorFilter);
+			}
+			// Keppel.Cao
+			layout = false;
+			startingScale = -1.0f;
+		}
+
+		if(!layout) {
+			//requestLayout();
+			//redraw();
+			requestLayout();
+			// Keppel.Cao
+			// redraw();
+			reset();
 		}
 	}
 

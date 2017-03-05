@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:gesture-image="http://schemas.polites.com/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_transparent">
+
+        <com.polites.android.GestureImageView
+            android:id="@+id/show_pic_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            gesture-image:strict="false"
+            gesture-image:min-scale="0.1"
+            gesture-image:max-scale="10.0"
+            />
+
+        <Button
+            android:text="退出"
+            android:id="@+id/show_pic_quit"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:background="@color/white_transparent"
+            android:layout_width="80dp"
+            android:layout_height="40dp" />
+    </RelativeLayout>
+
+</LinearLayout>

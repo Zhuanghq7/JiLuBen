@@ -106,7 +106,7 @@ public class needsActivity extends BaseActivity {
         mListView.scrollTo(x, y);//刷新列表
     }
 
-    private void refreshlist() {
+    public void refreshlist() {
         inititems();
         refreshlistview();
     }
@@ -129,15 +129,24 @@ public class needsActivity extends BaseActivity {
         }
         Log.e("TODAY", "" + today[0] + " " + today[1] + " " + today[2]);
         setContentView(R.layout.detallayout);
-        mListView = (ListView) findViewById(R.id.needs_listview);
-        refresh = (ImageView) findViewById(R.id.detail_refresh);
+
         mdb = new dataBase(getApplicationContext());
         final Intent intent = getIntent();
         int ID = intent.getExtras().getInt("ID");
         shop = mdb.getShopbyID(ID);
+
+        mListView = (ListView) findViewById(R.id.needs_listview);
+        refresh = (ImageView) findViewById(R.id.detail_refresh);
         name = (TextView) findViewById(R.id.shops_title);
         pos = (TextView) findViewById(R.id.shops_pos);
         tel = (TextView) findViewById(R.id.shops_tel);
+        morebutton = (ImageButton) findViewById(R.id.more_button);
+        morebutton2 = (ImageButton) findViewById(R.id.more_button2);
+        morebuttonl2 = (RelativeLayout) findViewById(R.id.more_button_l2);
+        moredata = (LinearLayout) findViewById(R.id.more_data);
+        morebuttonl = (RelativeLayout) findViewById(R.id.more_button_l);
+
+
         name.setText(shop.getName());
         pos.setText(shop.getPosition());
         tel.setText(shop.getTel());
@@ -145,8 +154,11 @@ public class needsActivity extends BaseActivity {
 
         //initgoods();
         inititems();//TODO listview 数据初始化
+        inititemsdate();
+
         imageManager = new ImageManager(itemses, this);//TODO 图片助手初始化
-        MAdapter = new newAdapter(getApplicationContext(), itemses, this);
+
+        MAdapter = new newAdapter(needsActivity.this, itemses, this);
         mListView.setAdapter(MAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -192,11 +204,6 @@ public class needsActivity extends BaseActivity {
             }
         });
         //TODO set listview
-        morebutton = (ImageButton) findViewById(R.id.more_button);
-        morebutton2 = (ImageButton) findViewById(R.id.more_button2);
-        morebuttonl2 = (RelativeLayout) findViewById(R.id.more_button_l2);
-        moredata = (LinearLayout) findViewById(R.id.more_data);
-        morebuttonl = (RelativeLayout) findViewById(R.id.more_button_l);
         morebuttonl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -245,8 +252,34 @@ public class needsActivity extends BaseActivity {
                 }
             }
         });
+//        throw new NullPointerException();
+
     }
 
+    private void inititemsdate() {
+        for (items temp : itemses) {
+            String date = temp.getName();
+            temp.setDate(arrangeDate(date));
+        }
+    }
+    private String[] arrangeDate(String date){
+        int tag = 0;
+        String[] tempdate = new String[6];
+        tempdate[0] = "";
+        tempdate[1] = "";
+        tempdate[2] = "";
+        tempdate[3] = "";
+        tempdate[4] = "";
+        tempdate[5] = "";
+        for(int i=0;i<date.length()&&tag<6;i++) {
+            if(date.charAt(i)!='_'&&date.charAt(i)!='-'){
+                tag++;
+            }else{
+                tempdate[tag] += date.charAt(i);
+            }
+        }
+        return tempdate;
+    }
     public void moreDataClose() {
         morebutton.setVisibility(View.INVISIBLE);
         morebuttonl.setVisibility(View.VISIBLE);

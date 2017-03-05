@@ -12,11 +12,14 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.util.List;
 
 import cn.zhuangh7.jiluben.R;
 import cn.zhuangh7.jiluben.activity.classes.items;
 import cn.zhuangh7.jiluben.activity.dialog.editTextDialog;
+import cn.zhuangh7.jiluben.activity.dialog.showPictureDialog;
 import cn.zhuangh7.jiluben.activity.needsActivity;
 
 /**
@@ -70,28 +73,86 @@ public class newAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         final items item = mlist.get(position);
         activity.imageManager.setPosition(position);
+        Log.d("HUAAWEI SB", "HUSWEI SB");
+        Log.i("HUAAWEI SB", "HUSWEI SB");
         //得到item
         if(convertView==null){
             if(item.isIfPic()){
                 ViewHolder4Pic viewholder = new ViewHolder4Pic();
                 convertView = mInflater.inflate(R.layout.itemlayout_pictures, null);
+                //TODO 填充layout
                 viewholder.name = (TextView) convertView.findViewById(R.id.item_pic_text_name);
                 viewholder.editText = (TextView) convertView.findViewById(R.id.item_pic_text_text);
                 viewholder.imageView = (ImageView) convertView.findViewById(R.id.item_pic_pic);
+                viewholder.button_text = (LinearLayout) convertView.findViewById(R.id.item_picture_text_edit);
+                //TODO get views
                 viewholder.name.setText(needsActivity.transDate(item.getName()));
                 viewholder.editText.setText(item.getText());
                 viewholder.imageView.setAdjustViewBounds(true);
-                Bitmap tempbitmap = activity.imageManager.getImageByposition(position);
+                final Bitmap tempbitmap = activity.imageManager.getImageByposition(position);
                 if(tempbitmap==null){
                     viewholder.imageView.setImageResource(R.drawable.cancel);
                 }else{
                     viewholder.imageView.setImageBitmap(tempbitmap);
+                    viewholder.imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            new showPictureDialog(context, item, tempbitmap).show();
+                        }
+                    });
                 }
+                //先不给edittext设置点击事件，因为imageview不捕获焦点所以可以直接用itemonclick事件（反正都一样→_→）
+                /*viewholder.button_text.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                       // final items itemTemp = itemses.get(position);
+                        final items itemTemp = item;
+                        final int pos = position;
+                        final editTextDialog dialog = new editTextDialog(context, itemTemp);
+                        dialog.setOnDeleteOnclickListener(new editTextDialog.onDeleteOnclickListener() {
+                            @Override
+                            public void onDeleteClick() {
+                                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+                                dialogBuilder.setTitle("警告");
+                                dialogBuilder.setMessage("确认要删除这一条目吗？");
+                                dialogBuilder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog1, int which) {
+                                        activity.mdb.deleteText(itemTemp.getName(), activity.shop.getID());
+                                        Toast.makeText(context, "删除成功", Toast.LENGTH_LONG).show();
+                                        Log.e("HUAWEI SB", "delete item from shop");
+                                        activity.refreshlist();
+                                        activity.imageManager.reLoadPosition(pos);//图片位置改变
+                                        dialog.dismiss();
+                                    }
+                                }).setNegativeButton("取消", null).show();
+
+                            }
+                        });
+                        dialog.setOnAcceptOnclickListener(new editTextDialog.onAcceptOnclickListener() {
+                            @Override
+                            public void onAcceptClick() {
+                                activity.mdb.editText(itemTemp.getName(), activity.shop.getID(), dialog.getMainText());
+                                Toast.makeText(context, "修改成功", Toast.LENGTH_SHORT).show();
+                                activity.refreshlist();
+                                dialog.dismiss();
+                            }
+                        });
+                        dialog.setOnCancelOnclickListener(new editTextDialog.onCancelOnclickListener() {
+                            @Override
+                            public void onCancelClick() {
+                                dialog.dismiss();
+                            }
+                        });
+                        dialog.show();
+                    }
+                });*/
+                //TODO views' data set
                 convertView.setTag(viewholder);
-            }else{
+            }else{//not a picture item
                 ViewHolder4Text viewholder = new ViewHolder4Text();
                 convertView = mInflater.inflate(R.layout.itemlayout_text, null);
                 viewholder.name = (TextView) convertView.findViewById(R.id.item_text_name);
@@ -100,22 +161,28 @@ public class newAdapter extends BaseAdapter {
                 viewholder.editText.setText(item.getText());
                 convertView.setTag(viewholder);
             }
-        }else{
+        }else{//convertView !=null
             if (item.isIfPic()) {
                 ViewHolder4Pic viewholder = (ViewHolder4Pic) convertView.getTag();
                 viewholder.editText.setText(item.getText());
                 viewholder.name.setText(needsActivity.transDate(item.getName()));
                 //viewholder.imageView.setImageBitmap(activity.setImageByName(item.getName()));
-                Bitmap tempbitmap = activity.imageManager.getImageByposition(position);
+                final Bitmap tempbitmap = activity.imageManager.getImageByposition(position);
                 if(tempbitmap==null){
                     viewholder.imageView.setImageResource(R.drawable.cancel);
                 }else{
                     viewholder.imageView.setImageBitmap(tempbitmap);
+                    viewholder.imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            new showPictureDialog(context, item, tempbitmap).show();
+                        }
+                    });
                 }
                 convertView.setTag(viewholder);
                 return convertView;
 
-            }else{
+            }else{//not a picture item
                 ViewHolder4Text viewholder = (ViewHolder4Text) convertView.getTag();
                 viewholder.name.setText(needsActivity.transDate(item.getName()));
                 viewholder.editText.setText(item.getText());
@@ -134,6 +201,7 @@ public class newAdapter extends BaseAdapter {
         private TextView editText;
         private TextView name;
         private ImageView imageView;
+        private LinearLayout button_text;
     }
 
 

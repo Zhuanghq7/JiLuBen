@@ -9,6 +9,17 @@ public class items {
     int shopId;
     String text;
 
+    public void setDate(String[] date) {
+        this.date = date;
+    }
+
+    public String[] getDate() {
+
+        return date;
+    }
+
+    String[] date;
+
     boolean ifPic;
     boolean ifUpCloud;
     int id;
@@ -20,6 +31,7 @@ public class items {
         this.ifUpCloud = ifUpCloud;
         this.id = id;
         this.text = text;
+        date = new String[6];
     }
 
     public String getName() {
